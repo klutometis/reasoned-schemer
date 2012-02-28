@@ -1,9 +1,9 @@
 README
 
-I'm working through The Reasoned Schemer[fn:1] using [[http://wiki.call-cc.org/eggref/4/kanren][Chicken's port]] of
-[[http://kanren.sourceforge.net/][mini-kanren]].
+* Abstract
 
-See [[https://github.com/klutometis/reasoned-schemer/blob/master/reasoned-schemer.org][reasoned-schemer.org]].
+  I'm working through The Reasoned Schemer[fn:1] using [[http://wiki.call-cc.org/eggref/4/kanren][Chicken's port]] of
+  [[http://kanren.sourceforge.net/][mini-kanren]].
 
 * Footnotes
 

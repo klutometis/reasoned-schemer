@@ -253,3 +253,73 @@ Reasoned Schemer
 
   " ~(== ...)~, ~(fresh ...)~, and ~(conde ...)~ are expressions, each
   of whose value is a goal." Lazy eval?
+* 2.1
+  =c=, where =c= is some scalar or other?
+
+  #+BEGIN_SRC scheme
+    (use test)
+    
+    (test
+     'c
+     (let ((x (lambda (a) a))
+           (y 'c))
+       (x y)))
+  #+END_SRC
+* 2.2
+  =(_.0 _.1)=: two reified but unbound variables.
+
+  #+BEGIN_SRC scheme
+    (use test mini-kanren)
+    
+    (test
+     '((_.0 _.1))
+     (run* (r)
+       (fresh (y x)
+         (== (list x y) r))))
+  #+END_SRC
+
+  Whoops: a list of two reified but unbound variables, i.e. =((_.0
+  _.1))=.
+
+  "=(list x y)= is a value, not an expression; could have been built
+  with =(cons (reify-name 0) (cons (reify-name 1) '()))=.
+
+  Double whoops (i.e. whoops which negateth whoops): the value
+  associated with =r= is indeed =(_.0 _.1)=.
+* 2.3
+  Similarly, =((_.0 _.1))=; since =x= and =y= corefer to the fresh
+  variables =v= and =w=.
+
+  #+BEGIN_SRC scheme
+    (use test mini-kanren)
+    
+    (test
+     '((_.0 _.1))
+     (run* (r)
+       (fresh (v w)
+         (== (let ((x v)
+                  (y w))
+              (list x y))
+            r))))
+  #+END_SRC
+* 2.4
+  =grape=
+* 2.5
+  =a=
+* 2.6
+  (So =caro= is indeed pronounced "car-oh".)
+
+  I would have said =(a c o r n)=, assuming that =caro= behaves like
+  =conde=; but the =e= in =conde= signifies "every line". Do the have
+  a =condo=?
+
+  =caro=, being (according to the preface), a "relation, a function
+  that returns a goal", might therefore associate =a= with =r=: it's a
+  singular goal.
+
+  #+BEGIN_SRC scheme
+    (use test mini-kanren)
+    
+    (run* (r)
+      (caro '(a c o r n) r))
+  #+END_SRC

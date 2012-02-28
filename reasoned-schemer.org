@@ -1,0 +1,164 @@
+* Preface
+  - A relation, a function that returns a goal as its value, ends its
+    name with a superscript `o': (e.g., $car^o$ and $null^o$).
+* 1.1 -- 1.53
+  #+BEGIN_SRC scheme
+    (use mini-kanren)
+    
+    (run* (q) (== #t q))
+    
+    (run* (q)
+          (conde
+           (fail succeed)
+           (else fail)))
+    
+    (run* (q) fail)
+    
+    (run* (q) fail (== #t q))
+    
+    (run* (q) succeed (== #t q))
+    
+    (run* (r) succeed (== 'corn r))
+    
+    (run* (r) fail (== 'corn r))
+    
+    (run* (x)
+          (let ((x #t))))
+    
+    (run 2 (x)
+         (conde (fail (== 1 x))
+                (succeed (== 2 x))
+                (else (== 3 x))))
+    
+    (run* (x) succeed)
+    
+    (run* (x)
+          (conde ((== 'olive x) succeed)
+                 ((== 'oil x) fail)
+                 (else fail)))
+  #+END_SRC
+* 1.37
+  When one variable is associated with another, we say they /co-refer/
+  or /share/.
+* 1.48
+  =e= in =conde= stands for "every line," since every line can
+  succeed.
+* 1.54
+  =((split pea) (navy bean))=, since both lines are run.
+
+  #+BEGIN_SRC scheme
+    (use mini-kanren)
+    
+    (run* (r)
+      (fresh (x y)
+        (conde
+         ((== 'split x) (== 'pea y))
+         ((== 'navy x) (== 'bean y))
+         (else fail))
+        (== (cons x (cons y '())) r)))
+  #+END_SRC
+* 1.55
+  =((split pea soup) (navy bean soup))=, since =soup= is constant.
+* 1.56
+  =(tea cup)=, passes to lambda; how to write the null superscript in
+  code? Apparently just =o= (e.g. =caro=, =cdro=, &c.).
+
+  #+BEGIN_SRC scheme :tangle kanren-symbols.scm :shebang #!/usr/bin/env chicken-scheme
+    (use test)
+    (use mini-kanren)
+    
+    (define teacupo
+      (lambda (x)
+        (conde ((== 'tea x) succeed)
+               ((== 'cup x) succeed)
+               (else fail))))
+    
+    (test '(tea cup)
+          (run* (x)
+            (teacupo x)))
+  #+END_SRC
+* 1.57
+  #+BEGIN_QUOTE
+  The question is the first goal of a line, however the answer is
+  the rest of the goals of the line; they must all succeed for the
+  line to succeed.
+  #+END_QUOTE
+
+  =((tea cup #t) (#f #t))= or =((_.0 #t) (#f #t))= depending on
+  whether the question associates the variable (I believe it does)
+  after it has been reified; voting for the former.
+
+  #+BEGIN_SRC scheme
+    (use mini-kanren test)
+    
+    (define teacupo
+      (lambda (x)
+        (conde ((== 'tea x) succeed)
+               ((== 'cup x) succeed)
+               (else fail))))
+    
+    (test
+     '((tea #t) (cup #t) (#f #t))
+     (run* (r)
+       (fresh (x y)
+         (conde
+          ((teacupo x) (== #t y) succeed)
+          ((== #f x) (== #t y))
+          (else fail))
+         (== (cons x (cons y '())) r))))
+  #+END_SRC
+
+  Oh, holy shit: =((tea #t) (cup #t) (#f #t))=: for every answer in a
+  line, there's a pairwise question-answer variable-association
+  (provided that every answer succeeds).
+
+  No, no; scratch that: "From =(teacupo x)=, $x$ gets two
+  associations." For every question-association, therefore, there's an
+  answer association. ~((teacupo x) (== #t y) (== #t y) succeed)~ has
+  the some number of associations; ~((teacupo x) (== #t y) fail (== #t
+  y) succeed)~ has none.
+* 1.58
+  In the first case, ~(== y x)~ succeeds; co-referring =y= and =x=;
+  they were already reified in the call to =fresh= above. =y= is
+  =_.0=, =x= is =_.1= or =_.0=? =_.0=, apparently (see below), since
+  they co-refer.
+
+  #+BEGIN_SRC scheme
+    (use test mini-kanren)
+    
+    (test
+     '((_.0 _.0))
+     (run* (r)
+       (fresh (x y)
+         (conde
+          ((== y x) succeed))
+         (== (cons x (cons y '())) r))))
+  #+END_SRC
+
+  =x=, then, gets refreshed as =_.1=; =z=, lastly, as =_.2=. So, =(_.0
+  _.2)=. No: =z= and =x= corefer as =_.1=; =(_.0 _.1)=, therefore.
+
+  Secondly, =x= is =_.0=; =y= and =z= corefer as =_.1=. =z= is unified
+  with =x=, however, yielding =(_.1 _.0)=.
+
+  Nope: misread; =y= and =x= corefer as =_.0=; =z=, therefore, as
+  =_.1=; which yields =((_.0 _.1) (_.0 _.1))=.
+
+  #+BEGIN_SRC scheme
+    (use test mini-kanren)
+    
+    (test
+     '((_.0 _.1) (_.0 _.1))
+     (run* (r)
+       (fresh (x y z)
+         (conde
+          ((== y x) (fresh (x) (== z x)))
+          ((fresh (x) (== y x)) (== z x))
+          (else fail))
+         (== (cons y (cons z '())) r))))
+  #+END_SRC
+
+  Authors mention that "it looks like both occurrences of =_.0= and
+  =_.1= have come from the same variable." Is that not the case? In
+  the first case, =_.0= is from the outer =x=; in the second, the
+  inner =x=. Conversely with =_.1=.

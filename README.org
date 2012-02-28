@@ -1,0 +1,13 @@
+README
+
+* Abstract
+
+I'm working through The Reasoned Schemer[fn:1] using [[http://wiki.call-cc.org/eggref/4/kanren][Chicken's port]] of
+[[http://kanren.sourceforge.net/][mini-kanren]].
+
+See [[file:reasoned-schemer.org][reasoned-schemer.org]].
+
+* Footnotes
+
+[fn:1] Friedman, Daniel P., William E. Byrd, and Oleg Kiselyov. The
+Reasoned Schemer. MIT Press, 2005.

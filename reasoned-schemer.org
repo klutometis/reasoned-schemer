@@ -162,3 +162,27 @@
   =_.1= have come from the same variable." Is that not the case? In
   the first case, =_.0= is from the outer =x=; in the second, the
   inner =x=. Conversely with =_.1=.
+* 1.59
+  How does the unification of ~(== #f x)~ interact with =conde=? If
+  =conde= binds =x= (which it doesn't: it merely reifies it), ~(== #f
+  x)~ should succeed and the result should be the same.
+
+  #+BEGIN_SRC scheme
+    (use test mini-kanren)
+    
+    (test
+     '((#f _.0) (_.0 #f))
+     (run* (r)
+       (fresh (x y z)
+         (conde
+          ((== y x) (fresh (x) (== z x)))
+          ((fresh (x) (== y x)) (== z x))
+          (else fail))
+         (== #f x)
+         (== (cons y (cons z '())) r))))
+  #+END_SRC
+
+  Oh, folly; in the first case, of course, =y= and the outer =x=
+  corefer, yielding ~(#f _.0)~ (since unbound variables are lazily
+  numbered); in the second, =y= and the inner =x= corefer, yielding (I
+  think) ~(_.0 #f)~, since the inner =x= is reified but unbound.

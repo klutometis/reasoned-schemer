@@ -214,3 +214,43 @@ Reasoned Schemer
 
   What they call "goals" are e.g. procedures (this is probably a
   flawed analogy, but we'll take it for a working hypothesis).
+* 1.61
+  Is =conde= merely a goal here, too, or does it get run? I suspect it
+  gets run.
+
+  Maybe not: only =b= below is apparently run:
+
+  #+BEGIN_SRC scheme
+    (use test mini-kanren)
+    
+    (test
+     '(2)
+     (run* (q)
+       (let ((a (conde
+                 ((== q q) (== q 3))
+                 (else fail)))
+             (b (== q 2)))
+         b)))
+  #+END_SRC
+
+  In that case, I'd posit =(#f)=; since =b= corefers =x= and =q= and
+  unifies =#f= with =x=. (We can ignore =a= and =c=.)
+
+  #+BEGIN_SRC scheme
+    (use test mini-kanren)
+    
+    (test
+     '(#f)
+     (run* (q)
+       (let ((a (== #t q))
+             (b (fresh (x)
+                  (== x q)
+                  (== #f x)))
+             (c (conde
+                 ((== #t q) succeed)
+                 (else ((== #f q))))))
+         b)))
+  #+END_SRC
+
+  "(== ...), (fresh ...), and (conde ...) are expressions, each of
+  whose value is a goal." Lazy eval?

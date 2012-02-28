@@ -251,5 +251,5 @@ Reasoned Schemer
          b)))
   #+END_SRC
 
-  "(== ...), (fresh ...), and (conde ...) are expressions, each of
-  whose value is a goal." Lazy eval?
+  " ~(== ...)~, ~(fresh ...)~, and ~(conde ...)~ are expressions, each
+  of whose value is a goal." Lazy eval?

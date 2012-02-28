@@ -1,5 +1,4 @@
 Reasoned Schemer
-
 * Preface
   - A relation, a function that returns a goal as its value, ends its
     name with a superscript `o': (e.g., $car^o$ and $null^o$).

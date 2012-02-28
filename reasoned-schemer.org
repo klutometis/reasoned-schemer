@@ -188,3 +188,29 @@ Reasoned Schemer
   corefer, yielding ~(#f _.0)~ (since unbound variables are lazily
   numbered); in the second, =y= and the inner =x= corefer, yielding (I
   think) ~(_.0 #f)~, since the inner =x= is reified but unbound.
+
+  This "clearly shows that the two occurrences of =_.0= in the
+  previous frame represent different variables;" is it the case that
+  they represent inner and outer =x= like we hypothesized?
+* 1.60
+  =()=, I think; since =let= binds sequentially and the second
+  unification of =#f= and =q= fails.
+
+  #+BEGIN_SRC scheme
+    (use debug test mini-kanren)
+    
+    (run* (q)
+      (let ((a (== #t q))
+            (b (== #f q)))
+        b))
+  #+END_SRC
+
+  Oh, clownage: =a= and =b= end up being unification procedures that
+  are lazily run?
+
+  "(== #t q) and (== #f q) and expressions, each of whose value is a
+  goal. But, here we only /treat/ the (== #f q) expression's value, b,
+  as a goal."
+
+  What they call "goals" are e.g. procedures (this is probably a
+  flawed analogy, but we'll take it for a working hypothesis).

@@ -1,5 +1,6 @@
 Reasoned Schemer
 * Preface
+# <<preface>>
   - A relation, a function that returns a goal as its value, ends its
     name with a superscript `o': (e.g., $car^o$ and $null^o$).
 * 1.1 -- 1.53
@@ -356,4 +357,38 @@ Reasoned Schemer
 
   They say "=x= is associated with the =car= of =(r y)=."
 * 2.9
-  
+  Instead of =caring= =p=, it unifies it with an =a-d= pair.
+
+  #+BEGIN_SRC scheme
+    (use test mini-kanren)
+    
+    (define caro
+      (lambda (p a)
+        (fresh (d)
+          (== (cons a d) p))))
+    
+    (test
+     '(#t)
+     (run* (q)
+       (caro '(a c o r n) 'a)
+       (== #t q)))
+    
+    (test
+     '()
+     (run* (q)
+       (caro '(a c o r n) 'b)))
+    
+    (test
+     '(_.0)
+     (run* (q)
+       (caro '(a c o r n) 'a)))
+  #+END_SRC
+
+  In the case of successful unification, =caro= returns a fresh
+  variable; it's a case of unification with multiple values? In other
+  words: =a= unifies with =p= successfully, so it returns =d=
+  (otherwise =#u=)?
+
+  Heh: "whereas =car= takes one argument, =caro= takes two." Since
+  [[preface][=caro= is a relation]], though, /das folgt von sich selbst,/ so to
+  speak.

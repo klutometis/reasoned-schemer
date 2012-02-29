@@ -392,3 +392,41 @@ Reasoned Schemer
   Heh: "whereas =car= takes one argument, =caro= takes two." Since
   [[preface][=caro= is a relation]], though, /das folgt von sich selbst,/ so to
   speak.
+* 2.10
+  =(grape a)=
+* 2.11
+  =(grape a)=, since both =caros= are successful (=x= and =y= being
+  fresh).
+
+  #+BEGIN_SRC scheme
+    (use test mini-kanren)
+    
+    (test
+     '((grape a))
+     (run* (r)
+       (fresh (x y)
+         (caro '(grape raisin pear) x)
+         (caro '((a) (b) (c)) y)
+         (== (cons x y) r))))
+  #+END_SRC
+* 2.12
+  You can use =cons= regardless; but =y= happens to be a list. What
+  happens otherwise?
+
+  #+BEGIN_SRC scheme
+    (use test mini-kanren)
+    
+    (test
+     '((grape . a))
+     (run* (r)
+       (fresh (x y)
+         (caro '(grape raisin pear) x)
+         (caro '(a b c) y)
+         (== (cons x y) r))))
+  #+END_SRC
+
+  No big whoop: just a pair.
+
+  Oh, I see: they're referring to the goal/value distinction (or is it
+  expression/value?) See 1:49: ". . . expressions, each of whose value
+  is a goal [double genitive]."

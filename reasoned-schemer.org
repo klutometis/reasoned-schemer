@@ -521,3 +521,5 @@ Reasoned Schemer
   is $number-of-fresh-variables$ plus one. Is =a= associated with the
   first element of the list (just as =d= in =caro= is associated with
   the rest)? Can't tell.
+* 2:17
+  =((raisin pear) a)=

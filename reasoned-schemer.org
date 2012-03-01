@@ -431,4 +431,91 @@ Reasoned Schemer
   expression/value?) See 1:49: ". . . expressions, each of whose value
   is a goal [double genitive]."
 * 2:13
-  
+  =(raisin pear)=
+* 2:14
+  =c=
+* 2:15
+  Hmm; on analogy with =cadr=, I'd expect =c=.
+
+  #+BEGIN_SRC scheme
+    (use test mini-kanren)
+    
+    (test
+     '(c)
+     (run* (r)
+       (fresh (v)
+         (cdro '(a c o r n) v)
+         (caro v r))))
+  #+END_SRC
+
+  "Process of transforming =(car (cdr l))= into =(cdro l v)= and
+  =(caro v r)= is called /unnesting/. . . . Recognize the simularity
+  between unnesting and [CPS]." The inverse of composition?
+
+  See [[http://citeseerx.ist.psu.edu/viewdoc/downloaddoi%3D10.1.1.47.9067&amp%3Brep%3Drep1&amp%3Btype%3Dpdf][this]]:
+
+  #+BEGIN_QUOTE
+  In general, the new representation for continuations will save time
+  and space when one function makes two or more non-tail calls. In the
+  CPS representation, the continuations for these calls will be
+  nested. The callee-save convention allows the continuation functions
+  to be un-nested and to share a closure. Since all continuation
+  functions are nested in some other user functions, the new
+  representation for continuations can take advantage of the closure
+  of the enclosing user functions if they happen to have some free
+  variables in common, thus decreasing the cost of closure record
+  constructions.
+  #+END_QUOTE
+* 2:16
+  How does this work?
+
+  #+BEGIN_SRC scheme
+    (use test mini-kanren)
+    
+    (define cdro
+      (lambda (p d)
+        (fresh (a)
+          (== (cons a d) p))))
+    
+    (test
+     '((c o r n))
+     (run* (q)
+       (cdro '(a c o r n) q)))
+    
+    (define cdro-with-list
+      (lambda (p d)
+        (fresh (a)
+          (== (list a d) p))))
+    
+    ;;; (list a d) instead of (cons a d) produces (); how do you explain
+    ;;; this behaviour: is it the terminal null which causes
+    ;;; pattern-matching to fail?
+    (test
+     '()
+     (run* (q)
+       (cdro-with-list '(a c o r n) q)))
+    
+    ;;; Indeed; this matches:
+    (test
+     '(c)
+     (run* (q)
+       (cdro-with-list '(a c) q)))
+  #+END_SRC
+
+  I had hypothesized that =caro= truncated the associated variable
+  with =(cons a d)=, where =d= is fresh and =a= is =carred=. In this
+  case, it unifies =(_.0 . x)= with =(1 2 3 ...)=. (=caro= is =(x .
+  _.0)=.)
+
+  The initial =_.0= ends up "deleting" the first element in the case
+  of =cdro=? If a =run*= had been somehow interposed, would it delete
+  them all?
+
+  =(list a d)= instead of =(cons a d)= returns =()=; is it the case
+  that pattern matching against the terminal null causes
+  pattern-matching to fail in the unification?
+
+  With a proper list, you have to match exactly $n$ members (where $n$
+  is $number-of-fresh-variables$ plus one. Is =a= associated with the
+  first element of the list (just as =d= in =caro= is associated with
+  the rest)? Can't tell.

@@ -3,6 +3,8 @@ Reasoned Schemer
 # <<preface>>
   - A relation, a function that returns a goal as its value, ends its
     name with a superscript `o': (e.g., $car^o$ and $null^o$).
+* Notes
+  [[http://www.cs.indiana.edu/cgi-pub/lkuper/c311/resources#minikanren-resources][Pattern-matching for mini-kanren]]
 * 1:1 -- 1:53
   #+BEGIN_SRC scheme
     (use mini-kanren)

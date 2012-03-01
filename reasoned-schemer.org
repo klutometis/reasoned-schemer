@@ -523,3 +523,17 @@ Reasoned Schemer
   the rest)? Can't tell.
 * 2:17
   =((raisin pear) a)=
+* 2:18
+  =((raisin pear) a)= by analogy.
+
+  #+BEGIN_SRC scheme
+    (use test mini-kanren)
+    
+    (test
+     '(((raisin pear) a))
+     (run* (r)
+       (fresh (x y)
+         (cdro '(grape raisin pear) x)
+         (caro '((a) (b) (c)) y)
+         (== (cons x y) r))))
+  #+END_SRC

@@ -617,3 +617,38 @@ Reasoned Schemer
 
   Also, =x= corefers to the =car= of =l=, =(_.0 c o r n)=: =_.0=;
   doesn't it? Therefore, unifying with =x= modifies =l=.
+
+  =cdro=, =caro=, &c. putting constraints on =l=; at unification time,
+  it either passes those constraints ("succeeds") or doesn't; =a= is a
+  datum.
+* 2:22
+  On analogy with =cons=, =(a b c d e)=; for every goal-function
+  ending in =o=, some variable is specified to associate with that
+  goal (when the goals are "unified", they are finally given the
+  opportunity to succeed or fail). Or maybe when the goals are simply
+  "run"; unification is something else: an assertion; an association?
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (test
+     '(((a b c) d e))
+     (run* (l)
+       (conso '(a b c) '(d e) l)))
+  #+END_SRC
+
+  Sorry: =((a b c) d e)=.
+* 2:23
+  According to pattern matching, =d= is associated with =x=.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (test
+     '(d)
+     (run* (x)
+       (conso x '(a b c) '(d a b c))))
+  #+END_SRC
+
+  =conso= is a goal; when run, =x= passed the constraints of its
+  goal(s) and yielded (was associated with) a value.

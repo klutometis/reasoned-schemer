@@ -553,4 +553,67 @@ Reasoned Schemer
        (== #t q)))
   #+END_SRC
 * 2:20
-  
+  Initial hypothesis: =x= is empty because =cdro= fails.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (test
+     '(o)
+     (run* (x)
+       (cdro '(c o r n) `(,x r n))))
+  #+END_SRC
+
+  Damn; which is not the case: =o=. Due to the (permissive) pattern
+  matching, =x= matches =o=; I might have so =(c o)=, but the matching
+  isn't greedy.
+
+  "Because =(o r n)= is the =cdr= of =(c o r n)=."
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (test
+     '()
+     (run* (x)
+       (== '(c o r n) `(,x r n))))
+    
+    (test
+     '(o)
+     (run* (x)
+       (fresh (y)
+         (== '(c o r n) `(,y ,x r n)))))
+    
+    (test
+     '(o)
+     (run* (x)
+       (== '(c o r n) `(c ,x r n))))
+  #+END_SRC
+
+  Unification isn't greedy, either.
+* 2:21
+  Possibly =(a o r n)=, if =x= is associated with the =car= of =l=;
+  and =l= is associated with the =cdr= of =(c o r n)=.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (test
+     '((a c o r n))
+     (run* (l)
+       (fresh (x)
+         (cdro l '(c o r n))
+         (caro l x)
+         (== 'a x))))
+    
+  #+END_SRC
+
+  =(a c o r n)=: ouch; how is this possible? Going back to the
+  definition of =cdro= and =caro=, however, we have =(_.0 c o r n)=
+  and =(x _.0)=; the unification of which is: =(a c o r n)=? Jesus.
+
+  Indeed: the =cdr= of =l= is =(c o r n)= (hence =(_.0 c o r n)=); but
+  =l= is not the =cdr= of =(c o r n)=.
+
+  Also, =x= corefers to the =car= of =l=, =(_.0 c o r n)=: =_.0=;
+  doesn't it? Therefore, unifying with =x= modifies =l=.

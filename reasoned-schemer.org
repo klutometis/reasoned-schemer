@@ -5,6 +5,9 @@ Reasoned Schemer
     name with a superscript `o': (e.g., $car^o$ and $null^o$).
 * Notes
   [[http://www.cs.indiana.edu/cgi-pub/lkuper/c311/resources#minikanren-resources][Pattern-matching for mini-kanren]]
+  #+BEGIN_SRC scheme :tangle mini-kanren-etc.scm
+    (use debug test mini-kanren)
+  #+END_SRC
 * 1:1 -- 1:53
   #+BEGIN_SRC scheme
     (use mini-kanren)
@@ -537,3 +540,17 @@ Reasoned Schemer
          (caro '((a) (b) (c)) y)
          (== (cons x y) r))))
   #+END_SRC
+* 2:19
+  =#t= should be associated with =q= since the =cdro= succeeds.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (test
+     '(#t)
+     (run* (q)
+       (cdro '(a c o r n) '(c o r n))
+       (== #t q)))
+  #+END_SRC
+* 2:20
+  

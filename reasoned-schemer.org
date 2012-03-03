@@ -653,9 +653,9 @@ Reasoned Schemer
   =conso= is a goal; when run, =x= passed the constraints of its
   goal(s) and yielded (was associated with) a value.
 * 2:24
-  $y$ \to =a=, I believe; =r= \to =(e a d x)=; =c= \to $x$; $z$ \to
-  =d=; and finally, $y$ is associated with the decons (i.e.
-  difference) of =(e a d c)= and =(a d c)= \to $y$.
+  =r= \to =(e a d x)=; =c= \to $x$; $z$ \to =d=; and finally, $y$ is
+  associated with the decons (i.e. difference) of =(e a d c)= and =(a
+  d c)= \to =e=.
 
   #+BEGIN_SRC scheme
     (include "mini-kanren-etc.scm")
@@ -667,3 +667,18 @@ Reasoned Schemer
          (== `(e a d ,x) r)
          (conso y `(a ,z c) r))))
   #+END_SRC
+* 2:25
+  =d=; interestingly, after satisfasfying the =conso= constraint, do
+  =(a x c)= and =(d a x c)= "become" =(a d c)=, =(d a d c)=,
+  respectively? Insofar as the refer to $x$, possibly; how to test
+  this?
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (test
+     '(d)
+     (run* (x)
+       (conso x `(a ,x c) `(d a ,x c))))
+  #+END_SRC
+* 2:26

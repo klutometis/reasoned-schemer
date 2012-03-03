@@ -652,3 +652,18 @@ Reasoned Schemer
 
   =conso= is a goal; when run, =x= passed the constraints of its
   goal(s) and yielded (was associated with) a value.
+* 2:24
+  $y$ \to =a=, I believe; =r= \to =(e a d x)=; =c= \to $x$; $z$ \to
+  =d=; and finally, $y$ is associated with the decons (i.e.
+  difference) of =(e a d c)= and =(a d c)= \to $y$.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (test
+     '((e a d c))
+     (run* (r)
+       (fresh (x y z)
+         (== `(e a d ,x) r)
+         (conso y `(a ,z c) r))))
+  #+END_SRC

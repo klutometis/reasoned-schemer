@@ -784,6 +784,22 @@ Reasoned Schemer
          (== 'e y))))
   #+END_SRC
   
+  And, for that matter, $w$ and $l$:
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (test
+     '((b e a n s))
+     (run* (l)
+       (fresh (d x y w s)
+         (conso w '(a n s) s)
+         (cdro l s)
+         (caro l x)
+         (== 'b x)     
+         (== 'e w))))
+  #+END_SRC
+
 * Footnotes
 
 [fn:1] Danenberg, Peter (klutometis). "On analogy with augend, addend,

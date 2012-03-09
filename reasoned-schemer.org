@@ -48,6 +48,10 @@ Reasoned Schemer
    - Augend, addend, sum
    - Multiplicand, multiplier, product
    - Dividend, divisor, quotient* 1:1 -- 1:53
+** Unification, goals, constraints
+   Goals, of which unification is one, are constraints; success means:
+   the constraints are mutually consistent. Fail: an inconsistent
+   constraint has been introduced.
 * 1:37
   When one variable is associated with another, we say they /co-refer/
   or /share/.
@@ -737,9 +741,54 @@ Reasoned Schemer
 
   The authors use $a$, $d$ and $p$ instead of $consend$, $consor$,
   $cons*$.
+* 2:29
+  =(b e a n s)=: $s$ is associated with =(_.0 a n s)=; $l$ is
+  associated with =(_.1 _.0 a n s)=; $x$ is associated with =_.1= (the
+  car of $l$) and finally with =b=.
 
+  $d$ is associated with =(_.0 a n s)=, the =cdr= of $l$;[fn:2] $y$
+  associated with =_.0= and finally with =e=.
+
+  $l$ is associated with =(b e a n s)=.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (test
+     '((b e a n s))
+     (run* (l)
+       (fresh (d x y w s)
+         (conso w '(a n s) s)
+         (cdro l s)
+         (caro l x)
+         (== 'b x)
+         (cdro l d)
+         (caro d y)
+         (== 'e y))))
+  #+END_SRC
+
+  It turns out that $d$ and $s$ do indeed corefer:
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (test
+     '((b e a n s))
+     (run* (l)
+       (fresh (d x y w s)
+         (conso w '(a n s) s)
+         (cdro l s)
+         (caro l x)
+         (== 'b x)
+         (caro s y)
+         (== 'e y))))
+  #+END_SRC
+  
 * Footnotes
 
 [fn:1] Danenberg, Peter (klutometis). "On analogy with augend, addend,
   sum; multiplicand, multiplier, product; &c., the elements of a cons
   operation are: consend, consor, cons." 8 March 12, 4:32 p.m. Tweet.
+
+[fn:2] Why not with $s$, by the way, the former =cdr= of $l$: do they
+  not corefer? They do, apparently: =(caro s y)= works just as well.

@@ -8,7 +8,7 @@ Reasoned Schemer
   #+BEGIN_SRC scheme :tangle mini-kanren-etc.scm
     (use debug test mini-kanren)
   #+END_SRC
-* 1:1 -- 1:53
+
   #+BEGIN_SRC scheme
     (use mini-kanren)
     
@@ -44,6 +44,10 @@ Reasoned Schemer
                  ((== 'oil x) fail)
                  (else fail)))
   #+END_SRC
+** Terminology
+   - Augend, addend, sum
+   - Multiplicand, multiplier, product
+   - Dividend, divisor, quotient* 1:1 -- 1:53
 * 1:37
   When one variable is associated with another, we say they /co-refer/
   or /share/.
@@ -713,3 +717,29 @@ Reasoned Schemer
   #+END_SRC
 
   (The authors describe it threefold: =cons=, associate, associate.)
+* 2:28
+  =conso= takes three arguments:[fn:1] the consend, consor and cons.
+  Can we attempt to unify a cons of the consend and consor with the
+  cons?
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (define conso
+      (lambda (consend consor pair)
+        (== (cons consend consor) pair)))
+    
+    (test
+     '((a . d))
+     (run* (l)
+       (conso 'a 'd l)))
+  #+END_SRC
+
+  The authors use $a$, $d$ and $p$ instead of $consend$, $consor$,
+  $cons*$.
+
+* Footnotes
+
+[fn:1] Danenberg, Peter (klutometis). "On analogy with augend, addend,
+  sum; multiplicand, multiplier, product; &c., the elements of a cons
+  operation are: consend, consor, cons." 8 March 12, 4:32 p.m. Tweet.

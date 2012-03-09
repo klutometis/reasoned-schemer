@@ -682,3 +682,34 @@ Reasoned Schemer
        (conso x `(a ,x c) `(d a ,x c))))
   #+END_SRC
 * 2:26
+  =(d a d c)=: =d= matches positions 1 and 3 without conflict.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (test
+     '((d a d c))
+     (run* (l)
+       (fresh (x)
+         (== `(d a ,x c) l)
+         (conso x `(a ,x c) l))))
+  #+END_SRC
+
+  [[http://en.wikipedia.org/wiki/Parataxis][Parataxically]] (as opposed to [[http://en.wikipedia.org/wiki/Hypotaxis][hypotaxically]] speaking): the $x$ in $l$
+  (=(d a x c)=) is associated with =d=.
+* 2:27
+  =(d a d c)=: the first $x$ (=._0=) in $l$ (=(x a x c)=) is
+  associated with =d=; and therefore the second $x$.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (test
+     '((d a d c))
+     (run* (l)
+       (fresh (x)
+         (conso x `(a ,x c) l)
+         (== `(d a ,x c) l))))
+  #+END_SRC
+
+  (The authors describe it threefold: =cons=, associate, associate.)

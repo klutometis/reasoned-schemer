@@ -132,6 +132,45 @@ Reasoned Schemer
   answer association. ~((teacupo x) (== #t y) (== #t y) succeed)~ has
   the some number of associations; ~((teacupo x) (== #t y) fail (== #t
   y) succeed)~ has none.
+
+  Albert's experiment:
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (define teacupo
+      (lambda (x)
+        (conde ((== 'tea x) succeed)
+               ((== 'cup x) succeed)
+               (else fail))))
+    
+    (test
+     '((tea tea tea)
+       (tea tea cup)
+       (tea cup tea)
+       (tea cup cup)
+       (cup tea tea)
+       (cup tea cup)
+       (cup cup tea)
+       (cup cup cup))
+     (run* (r)
+       (fresh (x y z)
+         (conde
+          ;; Cartesian product
+          ((teacupo x) (teacupo y) (teacupo z) succeed))
+         (== (cons x (cons y (cons z '()))) r))))
+    
+    (test
+     '(tea cup)
+     (run* (r)
+       (fresh (x)
+         (conde
+          ;; First unification succeeds before the inner conde and passes
+          ;; in specific values.
+          ((teacupo x) (teacupo x) succeed))
+         (== x r))))
+    
+  #+END_SRC
 * 1:58
   In the first case, ~(== y x)~ succeeds; co-referring =y= and =x=;
   they were already reified in the call to =fresh= above. =y= is

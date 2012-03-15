@@ -889,6 +889,31 @@ Reasoned Schemer
   longer fresh afterwards? Indeed. Therefore: =nullo=, =caro=,
   =cadro=, &c. are forms of destructive observation, i.e.
   constraint-setters.
+* 2:35
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (define nullo
+      (lambda (x)
+        (== x '())))
+    
+    (test
+     '()
+     (run* (q)
+       (nullo '(grape raisin pear))
+       (== #t q)))
+    
+    (test
+     '(#t)
+     (run* (q)
+       (nullo '())
+       (== #t q)))
+    
+    (test
+     '(())
+     (run* (x)
+       (nullo x)))
+  #+END_SRC
 * Footnotes
 
 [fn:1] Danenberg, Peter (klutometis). "On analogy with augend, addend,

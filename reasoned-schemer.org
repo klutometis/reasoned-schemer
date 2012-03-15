@@ -914,6 +914,63 @@ Reasoned Schemer
      (run* (x)
        (nullo x)))
   #+END_SRC
+* 2:36
+  =#f=
+* 2:37
+  =#t=
+* 2:38
+  =()=, because the =eqo= goal fails.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (test
+     "eqo on unequal symbols"
+     '()
+     (run* (q)
+       (eqo 'pear 'plum)
+       (== #t q)))
+  #+END_SRC
+* 2:39
+  =(#t)=, because the =eqo= goal succeeds; and so does the unification
+  of =#t= with $q$.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (test
+     "eqo on equal symbols"
+     '(#t)
+     (run* (q)
+       (eqo 'plum 'plum)
+       (== #t q)))
+  #+END_SRC
+* 2:40
+  Does it suffice merely to unify $x$ and $y$?
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (define eqo
+      (lambda (x y)
+        (== x y)))
+    
+    (test
+     "eqo on unequal symbols"
+     '()
+     (run* (q)
+       (eqo 'pear 'plum)
+       (== #t q)))
+    
+    (test
+     "eqo on equal symbols"
+     '(#t)
+     (run* (q)
+       (eqo 'plum 'plum)
+       (== #t q)))
+  #+END_SRC
+
+  Apparently.
 * Footnotes
 
 [fn:1] Danenberg, Peter (klutometis). "On analogy with augend, addend,

@@ -884,6 +884,11 @@ Reasoned Schemer
   =(nullo x)=, where $x$ is fresh, succeeds because it hasn't violated
   any constraints: it does not say, however, whether $x$ is actually
   null. $x$ is [[http://en.wikipedia.org/wiki/Schr%C3%B6dinger's_cat][Schrödinger's cat]], as long as it's fresh.
+
+  On the other hand, a unification takes place; $x$ is therefore no
+  longer fresh afterwards? Indeed. Therefore: =nullo=, =caro=,
+  =cadro=, &c. are forms of destructive observation, i.e.
+  constraint-setters.
 * Footnotes
 
 [fn:1] Danenberg, Peter (klutometis). "On analogy with augend, addend,

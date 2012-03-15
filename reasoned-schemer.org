@@ -838,7 +838,52 @@ Reasoned Schemer
          (== 'b x)     
          (== 'e w))))
   #+END_SRC
+* 2:30
+  =#f=
+* 2:31
+  =#t=
+* 2:32
+  =()=, since the =nullo= goal fails.
 
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (test
+     '()
+     (run* (q)
+       (nullo '(grape raisin pear))
+       (== #t q)))
+  #+END_SRC
+* 2:33
+  =(#t)=, since =nullo= and the unification of $q$ succeed.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (test
+     '(#t)
+     (run* (q)
+       (nullo '())
+       (== #t q)))
+  #+END_SRC
+* 2:34
+  Is a fresh variable null? Not necessarily; I hypothesize that
+  =nullo= fails.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (test
+     '(())
+     (run* (x)
+       (nullo x)))
+  #+END_SRC
+
+  Did =nullo= fail? If so, why an embedded list?
+
+  =(nullo x)=, where $x$ is fresh, succeeds because it hasn't violated
+  any constraints: it does not say, however, whether $x$ is actually
+  null. $x$ is [[http://en.wikipedia.org/wiki/Schr%C3%B6dinger's_cat][Schrödinger's cat]], as long as it's fresh.
 * Footnotes
 
 [fn:1] Danenberg, Peter (klutometis). "On analogy with augend, addend,

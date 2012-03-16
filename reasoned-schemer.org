@@ -52,6 +52,10 @@ Reasoned Schemer
    Goals, of which unification is one, are constraints; success means:
    the constraints are mutually consistent. Fail: an inconsistent
    constraint has been introduced.
+* 1:33
+  Reification in kanren is lazy in the sense that reified (but unbound
+  variables) receive their index from the terminal unification; it is
+  impossible, in other words, to produce e.g. =(_.1 _.0)=.
 * 1:37
   When one variable is associated with another, we say they /co-refer/
   or /share/.

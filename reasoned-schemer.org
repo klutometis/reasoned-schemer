@@ -1138,10 +1138,60 @@ Reasoned Schemer
 * 3:5
   Besides the superficial differences of =#t=, =#f= vs. =#s=, =#u=,
   &c.; the recursive call to =listo= (i.e. the =pairo= arm) is
-  parataxically (i.e. sequentially) not hypotaxically (i.e.
+  paratactically (i.e. sequentially) not hypotactically (i.e.
   compositionally) expressed.
 
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (define listo
+      (lambda (l)
+        (conde
+         ((nullo l) succeed)
+         ((pairo l)
+          (fresh (d)
+            (cdro l d)
+            (listo d)))
+         (else fail))))
+  #+END_SRC
+
   Ah, right: goals vs. booleans.
+* 3:6
+  It simulates the composition of =cdro= and =listo= paratactically.
+
+  (The authors' word for "parataxis" is "un-nesting".) Ah, see [[2:15]]:
+
+  #+BEGIN_QUOTE
+  The process of transforming =(car (cdr l))= into =(cdro l v)= and
+  =(caro v r)= is called /unnesting/. (Some readers may recognize the
+  similarity between unnesting and continuation-passing style.)
+  #+END_QUOTE
+
+  Declarative transformation: =cond= \to =conde=; unnest; =#t= \to
+  =#s=, =#f= \to =#u=.
+* 3:7
+  =_.0=; $x$ never gets bound.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (test
+     '(_.0)
+     (run* (x)
+       (listo `(a b ,x d))))
+  #+END_SRC
+* 3:8
+  =_.0= is indeterminate and could stand for e.g. =(_.0 _.1 ... _.n)=,
+  where $n \geq 0$.
+
+  Authors: the goal returned from =listo= succeeds for all values of
+  $x$.
+* 3:9
+  In =listo=, despite the fact that $x$ has been reified 7 times (once
+  at the outset, and twice for each iteration of =listo=
+  (corresponding to =pairo= and =cdro=)), it is still =_.0= and not
+  e.g =0.7= since, according to [[1:33]], reified but unbound variables
+  are ordered by the terminal unification (i.e. lazily).
 * Footnotes
 
 [fn:1] Danenberg, Peter (klutometis). "On analogy with augend, addend,

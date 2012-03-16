@@ -373,8 +373,11 @@ Reasoned Schemer
   #+BEGIN_SRC scheme
     (use test mini-kanren)
     
-    (run* (r)
-      (caro '(a c o r n) r))
+    (test
+     "caro"
+     '(a)
+     (run* (r)
+       (caro '(a c o r n) r)))
   #+END_SRC
 * 2:7
   =#t= is associated with =r=, since =caro's= goal succeeds; and =q=
@@ -493,6 +496,7 @@ Reasoned Schemer
     (use test mini-kanren)
     
     (test
+     "cdro"
      '(c)
      (run* (r)
        (fresh (v)

@@ -1120,6 +1120,22 @@ Reasoned Schemer
          (cdro '(a c o r n) v)
          (caro v r))))
   #+END_SRC
+* 3:1
+  =(list? '((a) (a b) c))= \to =#t=, since the final element of the
+  list is =null?=.
+* 3:2
+  =(list? ())= \to =#t=, since the final element of the list is
+  =null?=.
+* 3:3
+  =(list? 's)= \to =#f=, since the final element is not =null?=.
+* 3:4
+  =(list? '(d a t e . s))= \to =#f=, since the final element is not
+  =null?=.
+* 3:5
+  Besides the superficial differences of =#t=, =#f= vs. =#s=, =#u=,
+  &c.; the recursive call to =listo= (i.e. the =pairo= arm) is
+  parataxically (i.e. sequentially) not hypotaxically (i.e.
+  compositionally) expressed.
 * Footnotes
 
 [fn:1] Danenberg, Peter (klutometis). "On analogy with augend, addend,

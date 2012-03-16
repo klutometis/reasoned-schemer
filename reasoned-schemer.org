@@ -975,6 +975,151 @@ Reasoned Schemer
   #+END_SRC
 
   Apparently.
+* 2:41
+  Yes
+* 2:42
+  Yes
+* 2:43
+  =#t=
+* 2:44
+  =#f=
+* 2:45
+  No
+* 2:46
+  No
+* 2:47
+  Yes
+* 2:48
+  =pear=
+* 2:49
+  =()=
+* 2:50
+  =cons=
+* 2:51
+  =((split) . pea)=
+* 2:52
+  =(_.0 _.1 . salad)=.
+  
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (test
+     '((_.0 _.1 . salad))
+     (run* (r)
+       (fresh (x y)
+         (== (cons x (cons y 'salad)) r))))
+  #+END_SRC
+
+  Whoops: =((_.0 _.1 . salad))=.
+* 2:53
+  No, I don't think so; =conso= reduces to a unification using =cons=
+  and without =pairo=.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (define pairo
+      (lambda (p)
+        (fresh (a d)
+          (conso a d p))))
+    
+    (test
+     '(#t)
+     (run* (q)
+       (pairo '(a . b))
+       (== #t q)))
+  #+END_SRC
+
+  =pairo= detects, essentially, whether =p= can be destructured into
+  =car= and =cdr=.
+
+  (=a=, =d=, =p=, incidentally, stand for "address", "decrement" and
+  "pair;" I believe.)
+* 2:54
+  =(#t)=, since the =pairo= goal succeeds and so does the following
+  unification.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (test
+     '(#t)
+     (run* (q)
+       (pairo (cons q q))
+       (== #t q)))
+  #+END_SRC
+* 2:55
+  =()=, since =pairo= fails.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (test
+     '()
+     (run* (q)
+       (pairo '())
+       (== #t q)))
+  #+END_SRC
+* 2:56
+  =()=, since =pairo= fails.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (test
+     '()
+     (run* (q)
+       (pairo 'pair)
+       (== #t q)))
+  #+END_SRC
+* 2:57
+  =_.0=; since $r$, itself fresh, is unified with a fresh variable in
+  =conso= (over =pairo=).
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (test
+     '(_.0)
+     (run* (r)
+       (pairo (cons r 'pear))))
+  #+END_SRC
+
+  Is this an example of non-destructive unification? Non-destructive
+  unification is unification, I suppose, with a fresh variable; and
+  fresh-on-fresh yields fresh.
+* 2:58
+  That =pairo= can be defined from =conso= is already manifest in
+  [[2:52]]; =cdro= and =caro= should be definable in terms of =conso=,
+  too.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (define caro
+      (lambda (p a)
+        (fresh (d)
+          (conso a d p))))
+    
+    (define cdro
+      (lambda (p d)
+        (fresh (a)
+          (conso a d p))))
+    
+    (test
+     "caro based on conso"
+     '(a)
+     (run* (r)
+       (caro '(a c o r n) r)))
+    
+    (test
+     "cdro based on conso"
+     '(c)
+     (run* (r)
+       (fresh (v)
+         (cdro '(a c o r n) v)
+         (caro v r))))
+  #+END_SRC
 * Footnotes
 
 [fn:1] Danenberg, Peter (klutometis). "On analogy with augend, addend,

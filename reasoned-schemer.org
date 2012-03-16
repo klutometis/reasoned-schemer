@@ -1136,6 +1136,8 @@ Reasoned Schemer
   &c.; the recursive call to =listo= (i.e. the =pairo= arm) is
   parataxically (i.e. sequentially) not hypotaxically (i.e.
   compositionally) expressed.
+
+  Ah, right: goals vs. booleans.
 * Footnotes
 
 [fn:1] Danenberg, Peter (klutometis). "On analogy with augend, addend,

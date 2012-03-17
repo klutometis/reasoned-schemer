@@ -1197,6 +1197,24 @@ Reasoned Schemer
   (corresponding to =pairo= and =cdro=)), it is still =_.0= and not
   e.g =0.7= since, according to [[1:33]], reified but unbound variables
   are ordered by the terminal unification (i.e. lazily).
+* 3:10
+  It is constrained to be =()=, I believe.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (test
+     "Constrained listo"
+     '(())
+     (run 1 (x)
+          (listo `(a b c . ,x))))
+  #+END_SRC  
+* 3:11
+  Intuitively, $x$ is constrained to be =()= if =listo= is to succeed;
+  and =run= endeavors to make =listo= succeed.
+* 3:12
+  Mechanically, $x$ is unified with =()= when =listo= invokes the
+  =nullo=-question; and $x$ happens to be fresh at that point.
 * Footnotes
 
 [fn:1] Danenberg, Peter (klutometis). "On analogy with augend, addend,

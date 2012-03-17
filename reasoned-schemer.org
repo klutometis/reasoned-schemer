@@ -1254,9 +1254,10 @@ Reasoned Schemer
   pretends as though the previous had failed; running the =pairo= arm
   $n - 1$ times.
 
-  (From [[https://github.com/hoenigmann/reasoned-schemer/blob/master/reasoned-schemer.org][Albert]]: is the $n^{th}$ iteration of =run= aware of the
+  (From [[https://github.com/hoenigmann/reasoned-schemer/blob/master/reasoned-schemer.org][Albert]]: is the $n^{th}$ iteration of =run= aware of
   $n-1^{st}$'s result? In other words, is memoization taking place; or
-  does the calculation start from scratch every time?)
+  does the calculation start from scratch every time? The implication
+  is the difference between $O(n)$ and $O(n^2), I believe.)
 * Footnotes
 
 [fn:1] Danenberg, Peter (klutometis). "On analogy with augend, addend,

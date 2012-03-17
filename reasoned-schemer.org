@@ -57,6 +57,7 @@ Reasoned Schemer
    "how?" (cf. [[3:9]], [[3:12]], &c.) they are looking for an intuitive, as
    opposed to a mechanical, explanation; "how?", on the other hand, is
    mechanical.
+** TODO Formalize initial hypothesis, experiment, result?
 * 1:33
   Reification in kanren is lazy in the sense that reified (but unbound
   variables) receive their index from the terminal unification; it is

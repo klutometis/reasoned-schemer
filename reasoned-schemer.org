@@ -1216,6 +1216,43 @@ Reasoned Schemer
 * 3:12
   Mechanically, $x$ is unified with =()= when =listo= invokes the
   =nullo=-question; and $x$ happens to be fresh at that point.
+* 3:13
+  An infinite series of lists beginning with null: =()=, =(_.0)=, ...,
+  =(_.0 _.1 ... _.n)=.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    ;;; Never returns.
+    (run* (x)
+      (listo `(a b c . ,x)))
+  #+END_SRC
+
+  In fact, it never returns; implying that it has an infinite number
+  of answers. The authors claim it has "no value"; but this is an
+  artifact of finite machines.
+* 3:14
+  Initial hypothesis: =()=, =(_.0)=, =(_.0 _.1)=, =(_.0 _.1 _.2)=,
+  =(_.0 _.1 _.2 _.3)=; since it's generating the first five of all
+  possible (infinite) answers.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (test
+     "The first five of infinite solutions to (listo (... x))"
+     '(() (_.0) (_.0 _.1) (_.0 _.1 _.2) (_.0 _.1 _.2 _.3))
+     (run 5 (x)
+          (listo `(a b c . ,x))))
+  #+END_SRC
+
+  Mechanically, the first arm (the =nullo=-arm) of =listo's= =conde=
+  succeeds; for the next iteration, kanren "pretends" as though it had
+  not (is this an artifact of depth-first searching the solution
+  space?); it therefore executes the second arm (the =pairo= arm) and
+  finally the first (=nullo=) arm. For every subsequent run, it
+  pretends as though the previous had failed; running the =pairo= arm
+  $n - 1$ times.
 * Footnotes
 
 [fn:1] Danenberg, Peter (klutometis). "On analogy with augend, addend,

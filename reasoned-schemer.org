@@ -52,6 +52,11 @@ Reasoned Schemer
    Goals, of which unification is one, are constraints; success means:
    the constraints are mutually consistent. Fail: an inconsistent
    constraint has been introduced.
+** "Why?" vs. "how?"
+   When the authors ask "why?" (cf. [[3:8]], [[3:11]], &c.) as opposed to
+   "how?" (cf. [[3:9]], [[3:12]], &c.) they are looking for an intuitive, as
+   opposed to a mechanical, explanation; "how?", on the other hand, is
+   mechanical.
 * 1:33
   Reification in kanren is lazy in the sense that reified (but unbound
   variables) receive their index from the terminal unification; it is

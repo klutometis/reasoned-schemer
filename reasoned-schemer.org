@@ -1329,10 +1329,21 @@ Reasoned Schemer
             (lolo d)))
          (else #u))))
     
-    (run* (x)
-      (lolo '()))
+    (test
+     "lolo on null-list"
+     '(_.0)
+     (run* (x)
+       (lolo '())))
     
+    (test
+     "lolo on list-lists"
+     '(_.0)
+     (run* (x)
+       (lolo '((1) (2)))))
   #+END_SRC
+
+  =lolo= differs from =lol?= by the obligatory metathesis of booleans
+  with goals; composition with parataxis; =conde= instead of =cond=.
 
 * Footnotes
 

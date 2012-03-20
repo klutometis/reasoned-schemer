@@ -804,6 +804,61 @@ Reasoned Schemer
          (== 'e y))))
   #+END_SRC
   
+* 3:14
+  Nested =conde= produces a stack.
+* 3:15
+  Converting predicates into goals involves paratactizing composed
+  forms (unnesting); converting booleans into goals.
+* 3:16
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (define lol?
+      (lambda (l)
+        (cond
+         ((null? l) #t)
+         ((list? (car l)) (lol? (cdr l)))
+         (else #f))))
+    
+    (test-assert
+     (lol? '((1))))
+    
+    (test-assert
+     "Null-list is a list-of-lists."
+     (lol? '()))
+    
+    (test-assert
+     "List containing the null-list is a list-of-lists."
+     (lol? '(())))
+    
+    (test-assert
+     (not (lol? '(1))))
+  #+END_SRC
+
+  =lol?= checks if the first element is a list and, if so, recurses on
+  =cdr=; a null-list is a list-of-lists.
+
+  So-called "top-level values," according to the authors.
+* 3:17
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (define lolo
+      (lambda (l)
+        (conde
+         ((nullo l) #s)
+         ((fresh (a)
+            (caro l a)
+            (listo a))
+          (fresh (d)
+            (cdro l d)
+            (lolo d)))
+         (else #u))))
+    
+    (run* (x)
+      (lolo '()))
+    
+  #+END_SRC
 * Footnotes
 
 [fn:1] Danenberg, Peter (klutometis). "On analogy with augend, addend,

@@ -72,6 +72,16 @@ Reasoned Schemer
       '()
       (run* (x) #u))
    #+END_SRC
+** "Why?" vs. "how?"
+   When the authors ask "why?" (cf. [[3:8]], [[3:11]], &c.) as opposed to
+   "how?" (cf. [[3:9]], [[3:12]], &c.) they are looking for an intuitive, as
+   opposed to a mechanical, explanation; "how?", on the other hand, is
+   mechanical.
+** TODO Formalize initial hypothesis, experiment, result?
+* 1:33
+  Reification in kanren is lazy in the sense that reified (but unbound
+  variables) receive their index from the terminal unification; it is
+  impossible, in other words, to produce e.g. =(_.1 _.0)=.
 * 1:37
   When one variable is associated with another, we say they /co-refer/
   or /share/.
@@ -152,6 +162,45 @@ Reasoned Schemer
   answer association. ~((teacupo x) (== #t y) (== #t y) succeed)~ has
   the some number of associations; ~((teacupo x) (== #t y) fail (== #t
   y) succeed)~ has none.
+
+  Albert's experiment:
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (define teacupo
+      (lambda (x)
+        (conde ((== 'tea x) succeed)
+               ((== 'cup x) succeed)
+               (else fail))))
+    
+    (test
+     '((tea tea tea)
+       (tea tea cup)
+       (tea cup tea)
+       (tea cup cup)
+       (cup tea tea)
+       (cup tea cup)
+       (cup cup tea)
+       (cup cup cup))
+     (run* (r)
+       (fresh (x y z)
+         (conde
+          ;; Cartesian product
+          ((teacupo x) (teacupo y) (teacupo z) succeed))
+         (== (cons x (cons y (cons z '()))) r))))
+    
+    (test
+     '(tea cup)
+     (run* (r)
+       (fresh (x)
+         (conde
+          ;; First unification succeeds before the inner conde and passes
+          ;; in specific values.
+          ((teacupo x) (teacupo x) succeed))
+         (== x r))))
+    
+  #+END_SRC
 * 1:58
   In the first case, ~(== y x)~ succeeds; co-referring =y= and =x=;
   they were already reified in the call to =fresh= above. =y= is
@@ -354,8 +403,11 @@ Reasoned Schemer
   #+BEGIN_SRC scheme
     (use test mini-kanren)
     
-    (run* (r)
-      (caro '(a c o r n) r))
+    (test
+     "caro"
+     '(a)
+     (run* (r)
+       (caro '(a c o r n) r)))
   #+END_SRC
 * 2:7
   =#t= is associated with =r=, since =caro's= goal succeeds; and =q=
@@ -474,6 +526,7 @@ Reasoned Schemer
     (use test mini-kanren)
     
     (test
+     "cdro"
      '(c)
      (run* (r)
        (fresh (v)
@@ -803,8 +856,429 @@ Reasoned Schemer
          (caro s y)
          (== 'e y))))
   #+END_SRC
+
+  And, for that matter, $w$ and $l$:
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (test
+     '((b e a n s))
+     (run* (l)
+       (fresh (d x y w s)
+         (conso w '(a n s) s)
+         (cdro l s)
+         (caro l x)
+         (== 'b x)     
+         (== 'e w))))
+  #+END_SRC
+* 2:30
+  =#f=
+* 2:31
+  =#t=
+* 2:32
+  =()=, since the =nullo= goal fails.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (test
+     '()
+     (run* (q)
+       (nullo '(grape raisin pear))
+       (== #t q)))
+  #+END_SRC
+* 2:33
+  =(#t)=, since =nullo= and the unification of $q$ succeed.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (test
+     '(#t)
+     (run* (q)
+       (nullo '())
+       (== #t q)))
+  #+END_SRC
+* 2:34
+  Is a fresh variable null? Not necessarily; I hypothesize that
+  =nullo= fails.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (test
+     '(())
+     (run* (x)
+       (nullo x)))
+  #+END_SRC
+
+  Did =nullo= fail? If so, why an embedded list?
+
+  =(nullo x)=, where $x$ is fresh, succeeds because it hasn't violated
+  any constraints: it does not say, however, whether $x$ is actually
+  null. $x$ is [[http://en.wikipedia.org/wiki/Schr%C3%B6dinger's_cat][Schrödinger's cat]], as long as it's fresh.
+
+  On the other hand, a unification takes place; $x$ is therefore no
+  longer fresh afterwards? Indeed. Therefore: =nullo=, =caro=,
+  =cadro=, &c. are forms of destructive observation, i.e.
+  constraint-setters.
+* 2:35
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (define nullo
+      (lambda (x)
+        (== x '())))
+    
+    (test
+     '()
+     (run* (q)
+       (nullo '(grape raisin pear))
+       (== #t q)))
+    
+    (test
+     '(#t)
+     (run* (q)
+       (nullo '())
+       (== #t q)))
+    
+    (test
+     '(())
+     (run* (x)
+       (nullo x)))
+  #+END_SRC
+* 2:36
+  =#f=
+* 2:37
+  =#t=
+* 2:38
+  =()=, because the =eqo= goal fails.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (test
+     "eqo on unequal symbols"
+     '()
+     (run* (q)
+       (eqo 'pear 'plum)
+       (== #t q)))
+  #+END_SRC
+* 2:39
+  =(#t)=, because the =eqo= goal succeeds; and so does the unification
+  of =#t= with $q$.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (test
+     "eqo on equal symbols"
+     '(#t)
+     (run* (q)
+       (eqo 'plum 'plum)
+       (== #t q)))
+  #+END_SRC
+* 2:40
+  Does it suffice merely to unify $x$ and $y$?
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (define eqo
+      (lambda (x y)
+        (== x y)))
+    
+    (test
+     "eqo on unequal symbols"
+     '()
+     (run* (q)
+       (eqo 'pear 'plum)
+       (== #t q)))
+    
+    (test
+     "eqo on equal symbols"
+     '(#t)
+     (run* (q)
+       (eqo 'plum 'plum)
+       (== #t q)))
+  #+END_SRC
+
+  Apparently.
+* 2:41
+  Yes
+* 2:42
+  Yes
+* 2:43
+  =#t=
+* 2:44
+  =#f=
+* 2:45
+  No
+* 2:46
+  No
+* 2:47
+  Yes
+* 2:48
+  =pear=
+* 2:49
+  =()=
+* 2:50
+  =cons=
+* 2:51
+  =((split) . pea)=
+* 2:52
+  =(_.0 _.1 . salad)=.
   
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (test
+     '((_.0 _.1 . salad))
+     (run* (r)
+       (fresh (x y)
+         (== (cons x (cons y 'salad)) r))))
+  #+END_SRC
+
+  Whoops: =((_.0 _.1 . salad))=.
+* 2:53
+  No, I don't think so; =conso= reduces to a unification using =cons=
+  and without =pairo=.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (define pairo
+      (lambda (p)
+        (fresh (a d)
+          (conso a d p))))
+    
+    (test
+     '(#t)
+     (run* (q)
+       (pairo '(a . b))
+       (== #t q)))
+  #+END_SRC
+
+  =pairo= detects, essentially, whether =p= can be destructured into
+  =car= and =cdr=.
+
+  (=a=, =d=, =p=, incidentally, stand for "address", "decrement" and
+  "pair;" I believe.)
+* 2:54
+  =(#t)=, since the =pairo= goal succeeds and so does the following
+  unification.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (test
+     '(#t)
+     (run* (q)
+       (pairo (cons q q))
+       (== #t q)))
+  #+END_SRC
+* 2:55
+  =()=, since =pairo= fails.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (test
+     '()
+     (run* (q)
+       (pairo '())
+       (== #t q)))
+  #+END_SRC
+* 2:56
+  =()=, since =pairo= fails.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (test
+     '()
+     (run* (q)
+       (pairo 'pair)
+       (== #t q)))
+  #+END_SRC
+* 2:57
+  =_.0=; since $r$, itself fresh, is unified with a fresh variable in
+  =conso= (over =pairo=).
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (test
+     '(_.0)
+     (run* (r)
+       (pairo (cons r 'pear))))
+  #+END_SRC
+
+  Is this an example of non-destructive unification? Non-destructive
+  unification is unification, I suppose, with a fresh variable; and
+  fresh-on-fresh yields fresh.
+* 2:58
+  That =pairo= can be defined from =conso= is already manifest in
+  [[2:52]]; =cdro= and =caro= should be definable in terms of =conso=,
+  too.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (define caro
+      (lambda (p a)
+        (fresh (d)
+          (conso a d p))))
+    
+    (define cdro
+      (lambda (p d)
+        (fresh (a)
+          (conso a d p))))
+    
+    (test
+     "caro based on conso"
+     '(a)
+     (run* (r)
+       (caro '(a c o r n) r)))
+    
+    (test
+     "cdro based on conso"
+     '(c)
+     (run* (r)
+       (fresh (v)
+         (cdro '(a c o r n) v)
+         (caro v r))))
+  #+END_SRC
+* 3:1
+  =(list? '((a) (a b) c))= \to =#t=, since the final element of the
+  list is =null?=.
+* 3:2
+  =(list? ())= \to =#t=, since the final element of the list is
+  =null?=.
+* 3:3
+  =(list? 's)= \to =#f=, since the final element is not =null?=.
+* 3:4
+  =(list? '(d a t e . s))= \to =#f=, since the final element is not
+  =null?=.
+* 3:5
+  Besides the superficial differences of =#t=, =#f= vs. =#s=, =#u=,
+  &c.; the recursive call to =listo= (i.e. the =pairo= arm) is
+  paratactically (i.e. sequentially) not hypotactically (i.e.
+  compositionally) expressed.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (define listo
+      (lambda (l)
+        (conde
+         ((nullo l) succeed)
+         ((pairo l)
+          (fresh (d)
+            (cdro l d)
+            (listo d)))
+         (else fail))))
+  #+END_SRC
+
+  Ah, right: goals vs. booleans.
+* 3:6
+  It simulates the composition of =cdro= and =listo= paratactically.
+
+  (The authors' word for "parataxis" is "un-nesting".) Ah, see [[2:15]]:
+
+  #+BEGIN_QUOTE
+  The process of transforming =(car (cdr l))= into =(cdro l v)= and
+  =(caro v r)= is called /unnesting/. (Some readers may recognize the
+  similarity between unnesting and continuation-passing style.)
+  #+END_QUOTE
+
+  Declarative transformation: =cond= \to =conde=; unnest; =#t= \to
+  =#s=, =#f= \to =#u=.
+* 3:7
+  =_.0=; $x$ never gets bound.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (test
+     '(_.0)
+     (run* (x)
+       (listo `(a b ,x d))))
+  #+END_SRC
+* 3:8
+  =_.0= is indeterminate and could stand for e.g. =(_.0 _.1 ... _.n)=,
+  where $n \geq 0$.
+
+  Authors: the goal returned from =listo= succeeds for all values of
+  $x$.
+* 3:9
+  In =listo=, despite the fact that $x$ has been reified 7 times (once
+  at the outset, and twice for each iteration of =listo=
+  (corresponding to =pairo= and =cdro=)), it is still =_.0= and not
+  e.g =0.7= since, according to [[1:33]], reified but unbound variables
+  are ordered by the terminal unification (i.e. lazily).
+* 3:10
+  It is constrained to be =()=, I believe.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (test
+     "Constrained listo"
+     '(())
+     (run 1 (x)
+          (listo `(a b c . ,x))))
+  #+END_SRC  
+* 3:11
+  Intuitively, $x$ is constrained to be =()= if =listo= is to succeed;
+  and =run= endeavors to make =listo= succeed.
+* 3:12
+  Mechanically, $x$ is unified with =()= when =listo= invokes the
+  =nullo=-question; and $x$ happens to be fresh at that point.
+* 3:13
+  An infinite series of lists beginning with null: =()=, =(_.0)=, ...,
+  =(_.0 _.1 ... _.n)=.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    ;;; Never returns.
+    (run* (x)
+      (listo `(a b c . ,x)))
+  #+END_SRC
+
+  In fact, it never returns; implying that it has an infinite number
+  of answers. The authors claim it has "no value"; but this is an
+  artifact of finite machines.
 * 3:14
+  Initial hypothesis: =()=, =(_.0)=, =(_.0 _.1)=, =(_.0 _.1 _.2)=,
+  =(_.0 _.1 _.2 _.3)=; since it's generating the first five of all
+  possible (infinite) answers.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    
+    (test
+     "The first five of infinite solutions to (listo (... x))"
+     '(() (_.0) (_.0 _.1) (_.0 _.1 _.2) (_.0 _.1 _.2 _.3))
+     (run 5 (x)
+          (listo `(a b c . ,x))))
+  #+END_SRC
+
+  Mechanically, the first arm (the =nullo=-arm) of =listo's= =conde=
+  succeeds; for the next iteration, kanren "pretends" as though it had
+  not (is this an artifact of depth-first searching the solution
+  space?); it therefore executes the second arm (the =pairo= arm) and
+  finally the first (=nullo=) arm. For every subsequent run, it
+  pretends as though the previous had failed; running the =pairo= arm
+  $n - 1$ times.
+
+  (From [[https://github.com/hoenigmann/reasoned-schemer/blob/master/reasoned-schemer.org][Albert]]: is the $n^{th}$ iteration of =run= aware of
+  $n-1^{st}$'s result? In other words, is memoization taking place; or
+  does the calculation start from scratch every time? The implication
+  is the difference between $O(n)$ and $O(n^2), I believe.)
+
   Nested =conde= produces a stack.
 * 3:15
   Converting predicates into goals involves paratactizing composed
@@ -859,6 +1333,7 @@ Reasoned Schemer
       (lolo '()))
     
   #+END_SRC
+
 * Footnotes
 
 [fn:1] Danenberg, Peter (klutometis). "On analogy with augend, addend,

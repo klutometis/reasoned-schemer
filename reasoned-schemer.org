@@ -7,6 +7,9 @@ Reasoned Schemer
   [[http://www.cs.indiana.edu/cgi-pub/lkuper/c311/resources#minikanren-resources][Pattern-matching for mini-kanren]]
   #+BEGIN_SRC scheme :tangle mini-kanren-etc.scm
     (use debug test mini-kanren)
+    
+    (set-sharp-read-syntax! #\s (lambda (port) 'succeed))
+    (set-sharp-read-syntax! #\u (lambda (port) 'fail))
   #+END_SRC
 
   #+BEGIN_SRC scheme
@@ -52,6 +55,23 @@ Reasoned Schemer
    Goals, of which unification is one, are constraints; success means:
    the constraints are mutually consistent. Fail: an inconsistent
    constraint has been introduced.
+** Reader macros for =#s= and =#u=
+   #+BEGIN_SRC scheme :tangle pound-s-and-u.scm :shebang #!/usr/bin/env chicken-scheme
+     (include "mini-kanren-etc.scm")
+     
+     (set-sharp-read-syntax! #\s (lambda (port) 'succeed))
+     (set-sharp-read-syntax! #\u (lambda (port) 'fail))
+     
+     (test
+      "Succeed with sharp-syntax (#s)."
+      '(_.0)
+      (run* (x) #s))
+     
+     (test
+      "Fail with sharp-syntax (#u)."
+      '()
+      (run* (x) #u))
+   #+END_SRC
 * 1:37
   When one variable is associated with another, we say they /co-refer/
   or /share/.

@@ -1344,6 +1344,10 @@ Reasoned Schemer
 
   =lolo= differs from =lol?= by the obligatory metathesis of booleans
   with goals; composition with parataxis; =conde= instead of =cond=.
+* 3:18
+  (Cf. [[3:17]])
+* 3:19
+  The value of =(lolo l)= is always a goal.
 
 * Footnotes
 

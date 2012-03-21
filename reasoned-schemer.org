@@ -1377,6 +1377,77 @@ Reasoned Schemer
      (run 1 (l)
           (lolo l)))
   #+END_SRC
+* 3:21
+  =#t=, since =lolo= succeeds (=((a b) (x c) (d y))= being a
+  lists-list).
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    (include "lolo.scm")
+    
+    (test
+     '(#t)
+     (run* (q)
+       (fresh (x y)
+         (lolo `((a b) (,x c) (d ,y)))
+         (== #t q))))
+  #+END_SRC
+* 3:22
+  =#t=; since =lolo= succeeds, associating null with $x$.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    (include "lolo.scm")
+    
+    (test
+     '(#t)
+     (run 1 (q)
+          (fresh (x)
+            (lolo `((a b) . ,x))
+            (== #t q))))
+  #+END_SRC
+* 3:23
+  =(())=, since =lolo= succeeds, associating null with $x$.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    (include "lolo.scm")
+    
+    (test
+     '(())
+     (run 1 (x)
+          (lolo `((a b) (c d) . ,x))))
+  #+END_SRC
+* 3:24
+  On analogy with [[3:14]], we have:
+
+  #+BEGIN_SRC scheme
+    (()
+     (_.0)
+     (_.0 _.1)
+     (_.0 _.1 _.2)
+     (_.0 _.1 _.2 _.3))
+  #+END_SRC
+
+  Oh, god: I was totally wrong. We have an $n$-deep =conde=-stack
+  that, as opposed to =pairo= in =listo= (producing a list), leaves
+  behind a trail of nulls as it =cdros=. This trail of nulls is the
+  result of =listo= in the question.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    (include "lolo.scm")
+    
+    (test
+     '(()
+       (())
+       (() ())
+       (() () ())
+       (() () () ()))
+     (run 5 (x)
+          (lolo `((a b) (c d) . ,x))))
+  #+END_SRC
+
 * Footnotes
 
 [fn:1] Danenberg, Peter (klutometis). "On analogy with augend, addend,

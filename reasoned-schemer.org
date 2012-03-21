@@ -1314,9 +1314,7 @@ Reasoned Schemer
 
   So-called "top-level values," according to the authors.
 * 3:17
-  #+BEGIN_SRC scheme
-    (include "mini-kanren-etc.scm")
-    
+  #+BEGIN_SRC scheme :tangle lolo.scm
     (define lolo
       (lambda (l)
         (conde
@@ -1327,7 +1325,12 @@ Reasoned Schemer
           (fresh (d)
             (cdro l d)
             (lolo d)))
-         (else #u))))
+         (else #u))))  
+  #+END_SRC
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    (include "lolo.scm")
     
     (test
      "lolo on null-list"
@@ -1347,8 +1350,22 @@ Reasoned Schemer
 * 3:18
   (Cf. [[3:17]])
 * 3:19
-  The value of =(lolo l)= is always a goal.
+  The value of =(lolo l)= is always a goal; according to the [[preface]],
+  it is a so-called relation which, in accordance with its =o=-suffix,
+  returns a goal.
+* 3:20
+  =(())= because =(lolo l)= succeeds; more specifically, =(nullo l)=
+  succeeds and associates null with $l$.
 
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    (include "lolo.scm")
+    
+    (test
+     '(())
+     (run 1 (l)
+          (lolo l)))
+  #+END_SRC
 * Footnotes
 
 [fn:1] Danenberg, Peter (klutometis). "On analogy with augend, addend,

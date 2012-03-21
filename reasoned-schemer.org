@@ -72,6 +72,17 @@ Reasoned Schemer
       '()
       (run* (x) #u))
    #+END_SRC
+
+   Doesn't work to put the reader-macros and usage in the same file
+   because, according to Peter Bex:
+
+   #+BEGIN_QUOTE
+   13:12 < sjamaan> The read-syntax is only registered when you run
+   your program, which is way too late
+
+   13:12 < sjamaan> You can put the read-syntax definition in a separate
+   file, compile that and use -X to load it as a compiler extension
+   #+END_QUOTE
 ** "Why?" vs. "how?"
    When the authors ask "why?" (cf. [[3:8]], [[3:11]], &c.) as opposed to
    "how?" (cf. [[3:9]], [[3:12]], &c.) they are looking for an intuitive, as

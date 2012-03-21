@@ -1466,7 +1466,84 @@ Reasoned Schemer
 * 3:26
   =(twin twin)= is a twin if "twins" are lists of identical values.
 * 3:27
-  =(e twin)= is not a twin by [[3:27]].
+  =(e twin)= is not a twin by [[3:26]].
+* 3:28
+  =(g g g)= is not a twin, but a triplet; maybe.
+* 3:29
+  =((g g) (tofu tofu))= is a list of twins (but not itself a twin).
+* 3:30
+  =((g g) (e tofu))= is not a list of twins.
+* 3:31
+  =twinso= is not recursive. The first =conso= establishes that $x$ is
+  =car= and $y$, =rest= (including terminal null); the second =conso=
+  establishes that $x$ plus null is the same as $x$ plus null (e.g.
+  $y$).
+
+  #+BEGIN_SRC scheme :tangle twinso.scm
+    (define twinso
+      (lambda (s)
+        (fresh (x y)
+          (conso x y s)
+          (conso x '() y))))
+  #+END_SRC
+* 3:32
+  =#t= is associated with $q$, since =conso= succeeds.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    (include "twinso.scm")
+    
+    (test
+     '(#t)
+     (run* (q)
+       (twinso '(tofu tofu))
+       (== #t q)))
+  #+END_SRC
+* 3:32
+  =tofu= is associated with $z$, so as to satifsy the
+  =twinso=-constraint.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    (include "twinso.scm")
+    
+    (test
+     '(tofu)
+     (run* (z)
+       (twinso `(,z tofu))))
+  #+END_SRC
+* 3:33
+  See [[3:32]]: intuitively, $z$ is =tofu= so as to satisfy the
+  =twinso=-constraint.
+* 3:34
+  Mechanically, the first =conso= of =twinso= preserves $z$ as a fresh
+  variable. The second =conso=, however, decomposes $y$ into =tofu=
+  and null; associating $z$ with =tofu=.
+
+  The authors point out, furthermore, that $x$ and $z$ corefer; it is
+  therefore $x$, and consequently $z$, that get associated with the
+  =car= of $y$.
+* 3:35
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    (include "twinso.scm")
+    
+    (define twinso-sans-conso
+      (lambda (s)
+        (fresh (x)
+          (== (list x x) s))))
+    
+    (test
+     '(#t)
+     (run* (q)
+       (twinso-sans-conso '(tofu tofu))
+       (== #t q)))
+    
+    (test
+     '(tofu)
+     (run* (z)
+       (twinso `(,z tofu))))
+  #+END_SRC
 * Footnotes
 
 [fn:1] Danenberg, Peter (klutometis). "On analogy with augend, addend,

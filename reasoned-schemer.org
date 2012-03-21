@@ -1499,7 +1499,7 @@ Reasoned Schemer
        (twinso '(tofu tofu))
        (== #t q)))
   #+END_SRC
-* 3:32
+* 3:33
   =tofu= is associated with $z$, so as to satifsy the
   =twinso=-constraint.
 
@@ -1512,10 +1512,10 @@ Reasoned Schemer
      (run* (z)
        (twinso `(,z tofu))))
   #+END_SRC
-* 3:33
+* 3:34
   See [[3:32]]: intuitively, $z$ is =tofu= so as to satisfy the
   =twinso=-constraint.
-* 3:34
+* 3:35
   Mechanically, the first =conso= of =twinso= preserves $z$ as a fresh
   variable. The second =conso=, however, decomposes $y$ into =tofu=
   and null; associating $z$ with =tofu=.
@@ -1523,7 +1523,7 @@ Reasoned Schemer
   The authors point out, furthermore, that $x$ and $z$ corefer; it is
   therefore $x$, and consequently $z$, that get associated with the
   =car= of $y$.
-* 3:35
+* 3:36
   #+BEGIN_SRC scheme
     (include "mini-kanren-etc.scm")
     (include "twinso.scm")
@@ -1544,6 +1544,8 @@ Reasoned Schemer
      (run* (z)
        (twinso `(,z tofu))))
   #+END_SRC
+* 3:37
+  
 * Footnotes
 
 [fn:1] Danenberg, Peter (klutometis). "On analogy with augend, addend,

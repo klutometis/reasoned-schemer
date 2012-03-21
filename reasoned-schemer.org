@@ -1447,7 +1447,26 @@ Reasoned Schemer
      (run 5 (x)
           (lolo `((a b) (c d) . ,x))))
   #+END_SRC
+* 3:25
+  By "last list in the previous frame," do they mean =(() () () ())=?
+  If so, =(_.0)=; since it succeeds.
 
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    (include "lolo.scm")
+    
+    (test
+     '(_.0)
+     (run 5 (x)
+          (lolo `((a b) (c d) (() () () ())))))
+  #+END_SRC
+
+  Whoops: not only did I do the substitution wrongly; they were merely
+  asking about the substitution: =((a b) (c d) () () () ())=.
+* 3:26
+  =(twin twin)= is a twin if "twins" are lists of identical values.
+* 3:27
+  =(e twin)= is not a twin by [[3:27]].
 * Footnotes
 
 [fn:1] Danenberg, Peter (klutometis). "On analogy with augend, addend,

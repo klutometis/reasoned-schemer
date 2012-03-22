@@ -1545,7 +1545,22 @@ Reasoned Schemer
        (twinso `(,z tofu))))
   #+END_SRC
 * 3:37
-  
+# texttt instead of =, because = conflicts with ".
+  =loto= stands for: "\texttt{listo} of twins."
+
+  #+BEGIN_SRC scheme :tangle loto.scm
+    (define loto
+      (lambda (l)
+        (conde
+         ((nullo l) #s)
+         ((fresh (a)
+            (caro l a)
+            (twinso a))
+          (fresh (d)
+            (cdro l d)
+            (loto d)))
+         (else #u))))    
+  #+END_SRC
 * Footnotes
 
 [fn:1] Danenberg, Peter (klutometis). "On analogy with augend, addend,

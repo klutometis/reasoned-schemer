@@ -1561,6 +1561,22 @@ Reasoned Schemer
             (loto d)))
          (else #u))))    
   #+END_SRC
+* 3:38
+  =(g g)= is associated with $z$, since it's the twin of =(g g)=.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    (include "twinso.scm")
+    (include "loto.scm")
+    
+    (test
+     '(())
+     (run 1 (z)
+          (loto `((g g) . ,z))))
+  #+END_SRC
+
+  Got clowned on this one; =((g g))= is, of course, a list of twins.
+  So is =((g g) (g g) . . . (g g))=, for that matter.
 * Footnotes
 
 [fn:1] Danenberg, Peter (klutometis). "On analogy with augend, addend,

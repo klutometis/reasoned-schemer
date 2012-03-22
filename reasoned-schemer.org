@@ -1577,6 +1577,8 @@ Reasoned Schemer
 
   Got clowned on this one; =((g g))= is, of course, a list of twins.
   So is =((g g) (g g) . . . (g g))=, for that matter.
+
+  Therefore, null is associated with $z$.[fn:3]
 * Footnotes
 
 [fn:1] Danenberg, Peter (klutometis). "On analogy with augend, addend,
@@ -1585,3 +1587,6 @@ Reasoned Schemer
 
 [fn:2] Why not with $s$, by the way, the former =cdr= of $l$: do they
   not corefer? They do, apparently: =(caro s y)= works just as well.
+
+[fn:3] Null or nil? As ijp mentions: "() isn't the same as what CLers
+  would call nil[.]" 21 March 21, 17:46. #scheme, Freenode.

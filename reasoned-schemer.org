@@ -1439,6 +1439,26 @@ Reasoned Schemer
   sequence of nulls in =lolo= comes from the =listo= in its second
   =conde=-question.)
 
+  This result is evidence, by the way, that =run= goes depth first;
+  since, once it has exhausted the universe of null-lists, it will
+  exhaust the universe of monadic (unary) lists containing one fresh
+  variable; then dyadic, containing two; and so on:
+
+  #+BEGIN_SRC scheme
+    (() (()) (() ()) ...
+        ((_.0)) ((_.0) (_.0)) ...
+        ((_.0 _.1)) ((_.0 _.1) (_.0 _.1)) ...
+        ((_.0 _.1 ...)) ((_.0 _.1 ...) (_.0 _.1 ...)) ...)
+  #+END_SRC
+
+  If =run= progressed depth-first, it would exhaust, I think,
+  long-lists before iterating:
+
+  #+BEGIN_SRC scheme
+    (() (()) ((_.0)) ((_.0 _.1)) ...
+        ((_.0 ...) (_.0 ...) ...) ...)
+  #+END_SRC
+
   #+BEGIN_SRC scheme
     (include "mini-kanren-etc.scm")
     (include "lolo.scm")

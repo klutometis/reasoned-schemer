@@ -1434,6 +1434,11 @@ Reasoned Schemer
   behind a trail of nulls as it =cdros=. This trail of nulls is the
   result of =listo= in the question.
 
+  (On analogy with =listo= (cf. [[3:24]]), where the sequence of fresh
+  variables comes from =pairo= in its second =conde=-question; the
+  sequence of nulls in =lolo= comes from the =listo= in its second
+  =conde=-question.)
+
   #+BEGIN_SRC scheme
     (include "mini-kanren-etc.scm")
     (include "lolo.scm")
@@ -1559,7 +1564,7 @@ Reasoned Schemer
           (fresh (d)
             (cdro l d)
             (loto d)))
-         (else #u))))    
+         (else #u))))
   #+END_SRC
 * 3:38
   =(g g)= is associated with $z$, since it's the twin of =(g g)=.

@@ -1336,7 +1336,7 @@ Reasoned Schemer
           (fresh (d)
             (cdro l d)
             (lolo d)))
-         (else #u))))  
+         (else #u))))
   #+END_SRC
 
   #+BEGIN_SRC scheme
@@ -1451,7 +1451,7 @@ Reasoned Schemer
         ((_.0 _.1 ...)) ((_.0 _.1 ...) (_.0 _.1 ...)) ...)
   #+END_SRC
 
-  If =run= progressed depth-first, it would exhaust, I think,
+  If =run= progressed breadth-first, it would exhaust, I think,
   long-lists before iterating:
 
   #+BEGIN_SRC scheme

@@ -1459,6 +1459,10 @@ Reasoned Schemer
         ((_.0 ...) (_.0 ...) ...) ...)
   #+END_SRC
 
+  Is there some mechanism to simulate the end of the universe, when
+  =listo= will fail its incipient =conde=-question and finally issue
+  =pairo/nullo=?
+
   #+BEGIN_SRC scheme
     (include "mini-kanren-etc.scm")
     (include "lolo.scm")

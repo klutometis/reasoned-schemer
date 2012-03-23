@@ -1604,6 +1604,39 @@ Reasoned Schemer
   So is =((g g) (g g) . . . (g g))=, for that matter.
 
   Therefore, null is associated with $z$.[fn:3]
+* 3:39
+  =()= is, by whatever search-order =run= runs in, the first value of
+  $z$ that satisfies =loto=.
+* 3:40
+  =((g g) . ())= is =((g g))=.
+* 3:41
+  The =nullo= in =loto's= =conde= associates $z$ with null.
+* 3:42
+  #+BEGIN_SRC scheme
+    (((g g))
+     ((g g) (_.0 _.0))
+     ((g g) (_.0 _.0) (_.1 _.1))
+     ((g g) (_.0 _.0) (_.1 _.1) (_.2 _.2))
+     ((g g) (_.0 _.0) (_.1 _.1) (_.2 _.2) (_.3 _.3)))
+  #+END_SRC
+
+  Wow: it ignores =(g g)=, because no unification of =(g g)= with $z$
+  takes place.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    (include "twinso.scm")
+    (include "loto.scm")
+    
+    (test
+     '(()
+       ((_.0 _.0))
+       ((_.0 _.0) (_.1 _.1))
+       ((_.0 _.0) (_.1 _.1) (_.2 _.2))
+       ((_.0 _.0) (_.1 _.1) (_.2 _.2) (_.3 _.3)))
+     (run 5 (z)
+          (loto `((g g) . ,z))))
+  #+END_SRC
 * Footnotes
 
 [fn:1] Danenberg, Peter (klutometis). "On analogy with augend, addend,

@@ -1641,6 +1641,83 @@ Reasoned Schemer
      (run 5 (z)
           (loto `((g g) . ,z))))
   #+END_SRC
+* 3:43
+  The fresh variables derive from =twinso= (and ultimately =conso=)
+  from =loto's= second =conde=-question.
+* 3:44
+  We should get =()=, since =loto= fails.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    (include "twinso.scm")
+    (include "loto.scm")
+    
+    (test
+     '()
+     (run 5 (z)
+          (loto `((g g) . 42))))
+  #+END_SRC
+
+  Heh; misunderstood the question. We're not replacing $z$ by 42, but
+  $z$ by the fourth list of [[3:42]]: =((g g) (_.0 _.0) (_.1 _.1) (_.2
+  _.2) (_.3 _.3))=.
+* 3:45
+  $w$ is constrained to be =e=; $x$ and $y$ are unconstrained, and
+  therefore fresh (=_.0=); $z$ is, on analogy with [[3:42]], $n$ twins
+  from =((_.1 _.1) ... (_.n _.n))=:
+
+  #+BEGIN_SRC scheme
+    ((e (_.0 _.0))
+     (e (_.0 _.0) (_.1 _.1))
+     (e (_.0 _.0) (_.1 _.1) (_.2 _.2))
+     (e (_.0 _.0) (_.1 _.1) (_.2 _.2) (_.3 _.3))
+     (e (_.0 _.0) (_.1 _.1) (_.2 _.2) (_.3 _.3) (_.4 _.4)))
+  #+END_SRC
+
+  Ouch: I missed the fact that =()= is a valid twins-list; and that
+  $z$ is not appended as a pair but a list.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    (include "twinso.scm")
+    (include "loto.scm")
+    
+    (test
+     '((e (_.0 _.0) ())
+       (e (_.0 _.0) ((_.1 _.1)))
+       (e (_.0 _.0) ((_.1 _.1) (_.2 _.2)))
+       (e (_.0 _.0) ((_.1 _.1) (_.2 _.2) (_.3 _.3)))
+       (e (_.0 _.0) ((_.1 _.1) (_.2 _.2) (_.3 _.3) (_.4 _.4))))
+     (run 5 (r)
+          (fresh (w x y z)
+            (loto `((g g) (e ,w) (,x ,y) . ,z))
+            (== `(,w (,x ,y) ,z) r))))
+  #+END_SRC
+* 3:46
+  Destructuring is called for; given =(w (x y) z)= and
+
+  #+BEGIN_QUOTE
+  #+BEGIN_SRC scheme
+    (e (_.0 _.0) ((_.1 _.1) (_.2 _.2)))
+  #+END_SRC
+  #+END_QUOTE
+
+  we have:
+
+  #+BEGIN_QUOTE
+  - $w$ :: =e=
+  - $x$ :: =_.0=
+  - $y$ :: =_.0=
+  - $z$ :: =((_.1 _.1) (_.2 _.2))=
+  #+END_QUOTE
+
+  Plugging this in to =((g g) (e w) (x y) . z)= yields:
+
+  #+BEGIN_QUOTE
+  #+BEGIN_SRC scheme
+    ((g g) (e e) (_.0 _.0) (_.1 _.1) (_.2 _.2))
+  #+END_SRC
+  #+END_QUOTE
 * Footnotes
 
 [fn:1] Danenberg, Peter (klutometis). "On analogy with augend, addend,

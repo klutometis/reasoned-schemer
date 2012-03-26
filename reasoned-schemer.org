@@ -1718,6 +1718,85 @@ Reasoned Schemer
     ((g g) (e e) (_.0 _.0) (_.1 _.1) (_.2 _.2))
   #+END_SRC
   #+END_QUOTE
+* 3:47
+  I suspect we'll get:
+
+  #+BEGIN_SRC scheme
+    (((g g) (e e) (_.0 _.0))
+     ((g g) (e e) (_.0 _.0) (_.1 _.1))
+     ((g g) (e e) (_.0 _.0) (_.1 _.1) (_.2 _.2)))
+  #+END_SRC
+
+  since $w$ is constrained to be =e=; $x$ and $y$ are constrained to
+  be twins (fresh ones at that); and $z$ is an ever-growing list of
+  twins =consed= onto the former.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    (include "loto.scm")
+    
+    (test
+     '(((g g) (e e) (_.0 _.0))
+       ((g g) (e e) (_.0 _.0) (_.1 _.1))
+       ((g g) (e e) (_.0 _.0) (_.1 _.1) (_.2 _.2)))
+     (run 3 (out)
+          (fresh (w x y z)
+            (== `((g g) (e ,w) (,x ,y) . ,z) out)
+            (loto out))))
+  #+END_SRC
+* 3:48
+  #+BEGIN_SRC scheme :tangle listofo.scm
+    (define listofo
+      (lambda (predo l)
+        (conde
+         ((nullo l) #s)
+         ((fresh (a)
+            (caro l a)
+            (predo a))
+          (fresh (d)
+            (cdro l d)
+            (listofo predo d)))
+         (else #u))))
+  #+END_SRC
+
+  =listofo= is recursive in the second arm of its =conde=.
+* 3:49
+  The value is the same as [[3:47]], since =(listofo twinso out)= is a
+  generalization of =loto=.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    (include "twinso.scm")
+    (include "listofo.scm")
+    
+    (test
+     '(((g g) (e e) (_.0 _.0))
+       ((g g) (e e) (_.0 _.0) (_.1 _.1))
+       ((g g) (e e) (_.0 _.0) (_.1 _.1) (_.2 _.2)))
+     (run 3 (out)
+          (fresh (w x y z)
+            (== `((g g) (e ,w) (,x ,y) . ,z) out)
+            (listofo twinso out))))
+  #+END_SRC
+* 3:50
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    (include "twinso.scm")
+    (include "listofo.scm")
+    
+    (define loto
+      (lambda (l)
+        (listofo twinso l)))
+    
+    (test
+     '(()
+       ((_.0 _.0))
+       ((_.0 _.0) (_.1 _.1))
+       ((_.0 _.0) (_.1 _.1) (_.2 _.2))
+       ((_.0 _.0) (_.1 _.1) (_.2 _.2) (_.3 _.3)))
+     (run 5 (z)
+          (loto `((g g) . ,z))))
+  #+END_SRC
 * Footnotes
 
 [fn:1] Danenberg, Peter (klutometis). "On analogy with augend, addend,

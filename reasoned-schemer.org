@@ -89,6 +89,12 @@ Reasoned Schemer
    opposed to a mechanical, explanation; "how?", on the other hand, is
    mechanical.
 ** TODO Formalize initial hypothesis, experiment, result?
+** TODO Sections and subsections for exercises?
+   I want the transparency of e.g. [[1:33]] but the hierarchy of [[1]]/[[33]];
+   [[1]]/[[1:33]]? Slightly redundant, but allows linking; and corresponds
+   with the book.
+
+   On the other hand, why?
 * 1:33
   Reification in kanren is lazy in the sense that reified (but unbound
   variables) receive their index from the terminal unification; it is
@@ -1797,6 +1803,115 @@ Reasoned Schemer
      (run 5 (z)
           (loto `((g g) . ,z))))
   #+END_SRC
+* 3:51
+  #+BEGIN_SRC scheme
+    (define eq-car?
+      (lambda (l x)
+        (eq? (car l) x)))
+    
+    (define member?
+      (lambda (x l)
+        (cond
+         ((null? l) #f)
+         ((eq-car? l x) #t)
+         (else (member? x (cdr l))))))
+    
+    (test-assert
+     (member? 'a '(a b c)))
+  #+END_SRC
+* 3:52
+  /Jawohl./
+* 3:53
+  =#t=, since it doesn't behave like srfi-1's =member=.
+* 3:54
+  #+BEGIN_SRC scheme :tangle membero.scm
+    (define eq-caro
+      (lambda (l x)
+        (caro l x)))
+    
+    (define membero
+      (lambda (x l)
+        (conde
+         ((nullo l) #u)
+         ((eq-caro l x) #s)
+         (else
+          (fresh (d)
+            (cdro l d)
+            (membero x d))))))
+  #+END_SRC
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    (include "membero.scm")
+    
+    (test
+     '(a)
+     (run* (q)
+       (membero 'a `(,q b c))))
+  #+END_SRC
+* 3:55
+  The first =conde=-arm is unnecessary in the sense that the =cdro=
+  in =else= will fail when =l= has been exhausted.
+
+  The authors mention that, "whenever a =conde= line is guaranteed to
+  fail, it is unnecessary."
+
+  Hmm; is it the =caro= in =eq-caro= or the =cdro= in =else= that
+  fails first?
+* 3:56
+  =(member? x (cdr l))= has been unnested.
+* 3:57
+  =#t= is associated with $q$, since =membero= succeeds.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    (include "membero.scm")
+    
+    (test
+     '(#t)
+     (run* (q)
+       (membero 'olive '(virgin olive oil))
+       (== #t q)))
+  #+END_SRC
+* 3:58
+  Since =eq-car= first (successfully) unifies =hummus= with $y$ (à la
+  =conso=), I'd say =hummus= is associated with $y$.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    (include "membero.scm")
+    
+    (test
+     '(hummus)
+     (run 1 (y)
+          (membero y '(hummus with pita))))
+  #+END_SRC
+* 3:59
+  Similarly (cf. [[3:58]]), =with= is associated with $y$.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    (include "membero.scm")
+    
+    (test
+     '(with)
+     (run 1 (y)
+          (membero y '(with pita))))
+  #+END_SRC
+* 3:60
+  =pita= (cf. [[3:59]]).
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    (include "membero.scm")
+    
+    (test
+     '(pita)
+     (run 1 (y)
+          (membero y '(pita))))
+  #+END_SRC
+* 3:61
+  
 * Footnotes
 
 [fn:1] Danenberg, Peter (klutometis). "On analogy with augend, addend,

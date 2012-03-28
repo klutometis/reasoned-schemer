@@ -1911,6 +1911,34 @@ Reasoned Schemer
           (membero y '(pita))))
   #+END_SRC
 * 3:61
+  =()=, since =(nullo l)= succeeds (and =conde= therefore fails); or,
+  if the =nullo=-arm of =conde= has been omitted, it fails in the
+  =cdro= part of =else=.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    (include "membero.scm")
+    
+    (test
+     '()
+     (run* (y)
+       (membero y '())))
+  #+END_SRC
+* 3:62
+  I suspect we'll get =(hummus with pita)= (null, it turns out, fails
+  =membero=, probably because it fails =nullo= (or, in =nullo's=
+  absence, =cdro=) before it gets a chance to hit =eq-caro=).
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    (include "membero.scm")
+    
+    (test
+     '(hummus with pita)
+     (run* (y)
+       (membero y '(hummus with pita))))
+  #+END_SRC
+* 3:63
   
 * Footnotes
 

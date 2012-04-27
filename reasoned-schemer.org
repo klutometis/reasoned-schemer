@@ -2110,6 +2110,11 @@ Reasoned Schemer
 
   Also, not sure what the breadth-first alternative looks like:
   infinite lists, with endward =tofu=? Yes, I think so.
+* 3:77
+  See [[3:76][above]].
+
+  According to the authors, =cdro= is responsible for growing the
+  list; but =eq-caro= is responsible for placing =tofu= at the end.
 * Footnotes
 
 [fn:1] Danenberg, Peter (klutometis). "On analogy with augend, addend,

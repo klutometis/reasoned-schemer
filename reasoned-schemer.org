@@ -2009,6 +2009,9 @@ Reasoned Schemer
 
   Nope: neither! It's both fresh and =e=, since they both satisfy the
   =membero=-constraint.
+
+  The authors mention that, "the recursion succeeds before getting to
+  $x$:" succinct.
 * 3:70
   =e= is associated with $x$, since it's the first value that
   succeeds.
@@ -2022,6 +2025,91 @@ Reasoned Schemer
      (run 1 (x)
           (membero 'e `(pasta ,x e fagioli))))
   #+END_SRC
+
+  The authors mention that, "the recursion succeeds when it gets to
+  $x$:" nice.
+* 3:71
+  I suspect that =(e _.0)= and =(_.0 e)= fulfill =membero=: the first
+  when the recursion hits $x$ and not yet $y$; the second after $x$ is
+  refreshed and the recursion hits $y$. =((e _.0) (_.0 e))=,
+  therefore.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    (include "membero.scm")
+    
+    (test
+     '((e _.0) (_.0 e))
+     (run* (r)
+       (fresh (x y)
+         (membero 'e `(pasta ,x fagioli ,y))
+         (== (list x y) r))))
+  #+END_SRC
+* 3:72
+  See [[3:71][above]].
+* 3:73
+  =(tofu . _.0)= is associated with $l$, since any pair will do
+  (including a proper list with one element).[fn:4] This is because
+  =(eq-caro l x)= succeeds ($l$ being fresh) and associates $x$ with
+  the car of $l$.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    (include "membero.scm")
+    
+    (test
+     '((tofu . _.0))
+     (run 1 (l)
+          (membero 'tofu l)))
+  #+END_SRC
+
+  This yields the value =((tofu . _.0))=.
+* 3:74
+  See [[3:73][above]]: any pair, including a monadic list.
+
+  No, this is not true: any list whose =car= is =tofu=; i.e.,
+  infinitely many.
+* 3:75
+  An infinite number of lists starting with =(tofu ...)=.
+* 3:76
+  The first five possible lists beginning with =tofu=. Here we're
+  getting into breadth- vs. depth-firstness: if depth first, =tofu=
+  begins the list; if breadth first, =tofu= migrates endward.
+
+  #+BEGIN_QUOTE
+  #+BEGIN_SRC scheme
+    ((tofu . _.0)
+     (tofu _.0 . _.1)
+     (tofu _.0 _.1 . _.2)
+     (tofu _.0 _.1 _.2 . _.3)
+     (tofu _.0 _.1 _.2 _.3 . _.4))
+  #+END_SRC
+  #+END_QUOTE
+
+  Wrong again:
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    (include "membero.scm")
+    
+    (test
+     '((tofu . _.0)
+       (_.0 tofu . _.1)
+       (_.0 _.1 tofu . _.2)
+       (_.0 _.1 _.2 tofu . _.3)
+       (_.0 _.1 _.2 _.3 tofu . _.4))
+     (run 5 (l)
+          (membero 'tofu l)))
+  #+END_SRC
+
+  What happens is that, after =(eq-caro l x)= establishes =(tofu .
+  _.0)=, =(cdro l d)= keep pushing fresh variables in front of it;
+  this is depth-first. That's the mechanical explanation; not sure
+  what the intuitive explanation is for this ordering: possibly that
+  it builds its lists in =cons=-like order, given =cdro=.
+
+  Also, not sure what the breadth-first alternative looks like:
+  infinite lists, with endward =tofu=? Yes, I think so.
 * Footnotes
 
 [fn:1] Danenberg, Peter (klutometis). "On analogy with augend, addend,
@@ -2033,3 +2121,5 @@ Reasoned Schemer
 
 [fn:3] Null or nil? As ijp mentions: "() isn't the same as what CLers
   would call nil[.]" 21 March 21, 17:46. #scheme, Freenode.
+
+[fn:4] This is wrong; see [[3:74]].

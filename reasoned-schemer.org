@@ -1956,6 +1956,72 @@ Reasoned Schemer
     (let ((list '(1 2 3)))
       (test list (identity list)))
   #+END_SRC
+* 3:66
+  =e= is associated with $x$, since it is the only value that fulfills
+  =membero=.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    (include "membero.scm")
+    
+    (test
+     '(e)
+     (run* (x)
+       (membero 'e `(pasta ,x fagioli))))
+  #+END_SRC
+* 3:67
+  See [[3:66][above]].
+
+  "Because =(membero e (pasta e fagioli))= succeeds," mention the
+  authors.
+* 3:68
+  Inverted the relationship between question and answer.
+* 3:69
+  $x$ remains fresh because =(membero e (pasta e ...))= succeeds. On
+  the other hand, =((eq-caro l x) #s)= is wrapped in a =conde=; which
+  implies that $x$ becomes =e= when =conde= fails.
+
+  I'll go with the latter.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    (include "membero.scm")
+    
+    (test
+     '(_.0)
+     (run 1 (x)
+          (membero 'e `(pasta e ,x fagioli))))
+  #+END_SRC
+
+  Nope: my first hypothesis was correct; does that mean that recursive
+  =membero= is not invoked? Yes, because it's =(run 1 ...)= not =(run*
+  ...)=; in the latter case, $x$ might have been =e=.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    (include "membero.scm")
+    
+    (test
+     '(_.0 e)
+     (run* (x)
+          (membero 'e `(pasta e ,x fagioli))))
+  #+END_SRC
+
+  Nope: neither! It's both fresh and =e=, since they both satisfy the
+  =membero=-constraint.
+* 3:70
+  =e= is associated with $x$, since it's the first value that
+  succeeds.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    (include "membero.scm")
+    
+    (test
+     '(e)
+     (run 1 (x)
+          (membero 'e `(pasta ,x e fagioli))))
+  #+END_SRC
 * Footnotes
 
 [fn:1] Danenberg, Peter (klutometis). "On analogy with augend, addend,

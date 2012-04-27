@@ -1939,7 +1939,23 @@ Reasoned Schemer
        (membero y '(hummus with pita))))
   #+END_SRC
 * 3:63
-  
+  When =(eq-caro l x)= fails, $x$ (which is $y$) is recycled; =conde=
+  refreshes $x$ after the prenominate failure.
+* 3:64
+  Yes, if $l$ is a list.
+* 3:65
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    (include "membero.scm")
+    
+    (define identity
+      (lambda (list)
+        (run* (y)
+          (membero y list))))
+    
+    (let ((list '(1 2 3)))
+      (test list (identity list)))
+  #+END_SRC
 * Footnotes
 
 [fn:1] Danenberg, Peter (klutometis). "On analogy with augend, addend,

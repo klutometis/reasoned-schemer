@@ -2115,6 +2115,32 @@ Reasoned Schemer
 
   According to the authors, =cdro= is responsible for growing the
   list; but =eq-caro= is responsible for placing =tofu= at the end.
+* 3:78
+  Yes, in the sense that null fulfills the fresh-constraint.
+* 3:79
+  Null, since we're dealing with proper lists.
+* 3:80
+  Since it associates the =cdr= of $l$ with null, we should get proper
+  lists.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    (include "membero.scm")
+    
+    (define pmembero
+      (lambda (x l)
+        (conde
+         ((nullo l) #u)
+         ((eq-caro l x) (cdro l '()))
+         (else
+          (fresh (d)
+            (cdro l d)
+            (pmembero x d))))))
+    
+    (run 5 (l)
+         (pmembero 'tofu l))
+    
+  #+END_SRC
 * Footnotes
 
 [fn:1] Danenberg, Peter (klutometis). "On analogy with augend, addend,

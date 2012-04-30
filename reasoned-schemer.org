@@ -2123,10 +2123,7 @@ Reasoned Schemer
   Since it associates the =cdr= of $l$ with null, we should get proper
   lists.
 
-  #+BEGIN_SRC scheme
-    (include "mini-kanren-etc.scm")
-    (include "membero.scm")
-    
+  #+BEGIN_SRC scheme :tangle pmembero.scm
     (define pmembero
       (lambda (x l)
         (conde
@@ -2135,12 +2132,42 @@ Reasoned Schemer
          (else
           (fresh (d)
             (cdro l d)
-            (pmembero x d))))))
-    
-    (run 5 (l)
-         (pmembero 'tofu l))
-    
+            (pmembero x d))))))    
   #+END_SRC
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    (include "pmembero.scm")
+    
+    (test
+     '((tofu)
+       (_.0 tofu)
+       (_.0 _.1 tofu)
+       (_.0 _.1 _.2 tofu)
+       (_.0 _.1 _.2 _.3 tofu))
+     (run 5 (l)
+          (pmembero 'tofu l)))
+  #+END_SRC
+* 3:81
+  Saying: =tofu= is a member of a proper list; "proper" is the "p" in
+  =pmembero=.
+
+  Therefore, =(#t)= is the value.
+
+  #+BEGIN_SRC scheme
+    (include "mini-kanren-etc.scm")
+    (include "pmembero.scm")
+    
+    (test
+     '(#t)
+     (run* (q)
+       (pmembero 'tofu '(a b tofu d tofu))
+       (== #t q)))
+  #+END_SRC
+* 3:82
+  I was going to say [[3:81][vide supra]], but not for the reason I thought; it
+  should have been =(#t #t)=, but we're indeed searching for =tofu= at
+  the end of the list.
 * Footnotes
 
 [fn:1] Danenberg, Peter (klutometis). "On analogy with augend, addend,

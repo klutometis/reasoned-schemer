@@ -83,6 +83,8 @@ Reasoned Schemer
    13:12 < sjamaan> You can put the read-syntax definition in a separate
    file, compile that and use -X to load it as a compiler extension
    #+END_QUOTE
+
+   See [[http://wiki.call-cc.org/man/4/faq#why-does-define-reader-ctornot-work-in-my-compiled-program][this]].
 ** "Why?" vs. "how?"
    When the authors ask "why?" (cf. [[3:8]], [[3:11]], &c.) as opposed to
    "how?" (cf. [[3:9]], [[3:12]], &c.) they are looking for an intuitive, as
